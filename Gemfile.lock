@@ -1,0 +1,14 @@
+GEM
+  specs:
+    bacon (1.2.0)
+    ffi (1.9.10)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bacon
+  ffi
+
+BUNDLED WITH
+   1.11.2
