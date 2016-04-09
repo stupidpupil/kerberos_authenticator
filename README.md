@@ -15,6 +15,7 @@ KerberosAuthenticator.setup do |config|
   # Information for the Kerberos 5 library passed through environmental variables is ignored by default.
   # (See http://web.mit.edu/kerberos/krb5-current/doc/admins/env_variables.html)
   # If you want to use these environmental variables, uncomment the line below.
+  # (This has no effect if you're using the Heimdal library.)
   # config.krb5.use_secure_context = false
 
   # The authenticator requests ticket-granting-tickets (TGTs) by default.
