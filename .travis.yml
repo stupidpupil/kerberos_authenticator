@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - 2.3
+addons:
+  apt:
+    packages:
+    - libkrb5-3
+    - libkrb5-26-heimdal
+script: run_integration_test.sh
