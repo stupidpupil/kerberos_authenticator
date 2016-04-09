@@ -64,7 +64,6 @@ module KerberosAuthenticator
         verify_creds_opt = FFI::MemoryPointer.new :int, 2
 
         Krb5.verify_init_creds_opt_init(verify_creds_opt)
-        verify_creds_opt.autorelease = false
 
         begin
           Krb5.verify_init_creds_opt_set_ap_req_nofail(verify_creds_opt, nofail)
@@ -73,8 +72,6 @@ module KerberosAuthenticator
           keytab_ptr = keytab ? keytab.ptr : nil
 
           Krb5.verify_init_creds(context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)
-        ensure
-          Krb5.get_init_creds_opt_free(context.ptr, verify_creds_opt)
         end
 
         true
