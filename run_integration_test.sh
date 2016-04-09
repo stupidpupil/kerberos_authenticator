@@ -23,12 +23,20 @@ library_name='OS X Heimdal'
 library_path='/usr/lib/libkrb5.dylib'
 run_bacon
 
-library_name='Debian Heimdal'
+library_name='Debian x64 Heimdal'
 library_path='/usr/lib/x86_64-linux-gnu/libkrb5.so.26'
 run_bacon
 
-library_name='Debian MIT'
+library_name='Debian x64 MIT'
 library_path='/usr/lib/x86_64-linux-gnu/libkrb5.so.3'
+run_bacon
+
+library_name='Debian i386 Heimdal'
+library_path='/usr/lib/i386-linux-gnu/libkrb5.so.26'
+run_bacon
+
+library_name='Debian i386 MIT'
+library_path='/usr/lib/i386-linux-gnu/libkrb5.so.3'
 run_bacon
 
 exit $ret
