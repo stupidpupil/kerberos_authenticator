@@ -1,8 +1,9 @@
 # Kerberos Authenticator
+[![Build Status](https://travis-ci.org/stupidpupil/kerberos_authenticator.svg?branch=master)](https://travis-ci.org/stupidpupil/kerberos_authenticator)
 
-This library is intended to make it easy to authenticate someone using their Kerberos username and password.
+This library is intended to make it easy to authenticate someone using their Kerberos password in your Ruby application.
 
-It uses [Ruby-FFI](https://github.com/ffi/ffi/) to call the Kerberos 5 library. I have tested it with the [Heimdal](https://www.h5l.org/) libary under OS X and the [MIT](http://web.mit.edu/kerberos/krb5-1.14/doc/) library under Debian.
+It uses [Ruby-FFI](https://github.com/ffi/ffi/) to call the Kerberos 5 library. I have tested it with the [Heimdal](https://www.h5l.org/) library under OS X and the [MIT](http://web.mit.edu/kerberos/krb5-1.14/doc/) library under Debian. (Some very limited local tests are also run against both the Heimdal and MIT libraries using Travis.)
 
 ## Example
 
