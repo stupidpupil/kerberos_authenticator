@@ -1,3 +1,9 @@
+PATH
+  remote: .
+  specs:
+    kerberos_authenticator (0.0.2)
+      ffi (~> 1.9)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -10,6 +16,7 @@ PLATFORMS
 DEPENDENCIES
   bacon
   ffi
+  kerberos_authenticator!
 
 BUNDLED WITH
    1.11.2
