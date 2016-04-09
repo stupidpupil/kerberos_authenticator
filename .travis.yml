@@ -9,4 +9,4 @@ addons:
 cache:
 - bundler
 - apt
-script: bash run_integration_test.sh
+script: bundle exec bash run_integration_test.sh
