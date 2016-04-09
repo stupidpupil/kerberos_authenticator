@@ -6,4 +6,7 @@ addons:
     packages:
     - libkrb5-3
     - libkrb5-26-heimdal
+cache:
+- bundler
+- apt
 script: bash run_integration_test.sh
