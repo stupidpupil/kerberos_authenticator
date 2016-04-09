@@ -1,4 +1,5 @@
 GEM
+  remote: https://rubygems.org/
   specs:
     bacon (1.2.0)
     ffi (1.9.10)
