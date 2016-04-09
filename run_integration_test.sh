@@ -2,7 +2,7 @@
 
 ret=0
 
-if [ -n $KA_SPEC_RUN_INTEGRATION ]; then
+if [ -n "$KA_SPEC_RUN_INTEGRATION" ]; then
   source integration_test_support/environment
 fi
 
