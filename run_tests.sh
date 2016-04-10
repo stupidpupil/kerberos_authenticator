@@ -1,5 +1,8 @@
 #!/bin/sh
 
+bold=$(tput bold)
+normal=$(tput sgr0)
+
 ret=0
 
 if [ -n "$KA_SPEC_RUN_INTEGRATION" ]; then
@@ -8,12 +11,17 @@ fi
 
 run_bacon ( ) {
   if [ -f $library_path ]; then
-    echo $library_name
+    echo "${bold}$library_name${normal}"
     FFI_KRB5_LIBRARY_NAME=$library_path bacon -a
     ret=$(($ret+$?))
     echo ''
   fi
 }
+
+echo "${bold}Autodiscover${normal}"
+bacon -a
+ret=$(($ret+$?))
+echo ''
 
 library_name='MacPorts MIT'
 library_path='/opt/local/lib/libkrb5.dylib'
