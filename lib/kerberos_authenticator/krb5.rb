@@ -6,12 +6,12 @@ module KerberosAuthenticator
   module Krb5
     extend FFI::Library
 
-    PREFERRED_VERSIONS = ['.3','.26','']
+    PREFERRED_VERSIONS = ['.3', '.26', ''].freeze
 
     if ENV['FFI_KRB5_LIBRARY_NAME']
       ffi_lib ENV['FFI_KRB5_LIBRARY_NAME']
     else
-      ffi_lib PREFERRED_VERSIONS.map {|v| FFI.map_library_name('krb5') + v}
+      ffi_lib PREFERRED_VERSIONS.map { |v| FFI.map_library_name('krb5') + v }
     end
 
     # @!attribute [rw] use_secure_context

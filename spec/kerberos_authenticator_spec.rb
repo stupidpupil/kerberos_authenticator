@@ -53,4 +53,3 @@ describe KerberosAuthenticator do
     end
   end
 end
-

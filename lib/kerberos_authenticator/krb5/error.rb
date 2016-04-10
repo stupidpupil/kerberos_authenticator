@@ -17,7 +17,7 @@ module KerberosAuthenticator
       end
 
       def self.finalize(context_ptr)
-        proc {|ptr| Krb5.free_error_message(context_ptr, ptr) }
+        proc { |ptr| Krb5.free_error_message(context_ptr, ptr) }
       end
 
       def self.raise_if_error(context_ptr = nil)

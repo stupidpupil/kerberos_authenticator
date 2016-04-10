@@ -75,7 +75,7 @@ module KerberosAuthenticator
 
       # @api private
       def self.finalize(context, ptr)
-        proc { Krb5.free_cred_contents(context.ptr, ptr); ptr.free}
+        proc { Krb5.free_cred_contents(context.ptr, ptr); ptr.free }
       end
     end
   end
