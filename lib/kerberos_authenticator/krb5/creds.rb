@@ -28,7 +28,7 @@ module KerberosAuthenticator
         raise TypeError, 'expected Principal' unless principal.is_a? Principal
 
         context = principal.context
-        ptr = FFI::MemoryPointer.new :char, 120
+        ptr = FFI::MemoryPointer.new :char, 480 # HACK
 
         Krb5.get_init_creds_password(context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
 
@@ -75,7 +75,7 @@ module KerberosAuthenticator
 
       # @api private
       def self.finalize(context, ptr)
-        proc { Krb5.krb5_free_cred_contents(context.ptr, ptr) and ptr.free}
+        proc { Krb5.free_cred_contents(context.ptr, ptr); ptr.free}
       end
     end
   end
