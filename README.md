@@ -52,7 +52,7 @@ In order to avoid the Zanarotti attack, your application has to confirm the iden
 
 You can read more about this in the [MIT Kerberos documentation](http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/init_creds.html). 
 
-I wrote this gem specifically because most Ruby examples of using Kerberos to authenticate a user with their username and password failed to verify the identity of the KDC. Most Ruby interfaces to Kerberos 5 libraries did not even support the `krb5_verify_init_creds` function necessary to implement this verification.
+I wrote this gem specifically because most Ruby examples of using Kerberos to authenticate a user with their username and password failed to verify the identity of the KDC, and most Ruby interfaces to Kerberos 5 libraries did not support the `krb5_verify_init_creds` function necessary to implement this verification.
 
 ### Vulnerable Ruby examples
 * https://github.com/atomaka/devise-kerberos-authenticatable
