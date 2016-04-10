@@ -59,8 +59,5 @@ I wrote this gem specifically because most Ruby examples of using Kerberos to au
 * https://github.com/naffis/omniauth-krb5
 * https://github.com/sleeper/rack-auth-krb
 
-## Issues
-
-Crash under Heimdal when no server principal given (?!)
-Permission denied when no keytab given (tries to  read /etc/krb5.keytab)
-LoadError, can't find krb5 - `FFI_KRB5_LIBRARY_NAME`
+## LoadError
+If requiring the gem results in a LoadError, you can specify how to find your Kerberos 5 library by setting the `FFI_KRB5_LIBRARY_NAME` environmental variable. (Or you could install the development files for your Kerberos 5 library, which should almost always allow the gem to find the library.)
