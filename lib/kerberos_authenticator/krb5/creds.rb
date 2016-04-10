@@ -20,19 +20,17 @@ module KerberosAuthenticator
       # @param password [String] the user's password
       # @param service [String] the service name used when requesting the credentials
       # @return [Creds]
-      # @raise [ArgumentError] if password doesn't respond to #to_s
       # @raise [Error] if a KDC for the principal can't be contacted
       # @raise [Error] if preauthentication fails
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_get_init_creds_password.html krb5_get_init_creds_password
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/init_creds.html Initial credentials
       def self.initial_creds_for_principal_with_a_password(principal, password, service = nil)
-        raise ArgumentError, 'expected Principal' unless principal.is_a? Principal
-        raise ArgumentError, 'expected String for password' unless password.respond_to? :to_s
+        raise TypeError, 'expected Principal' unless principal.is_a? Principal
 
         context = principal.context
         ptr = FFI::MemoryPointer.new :char, 120
 
-        Krb5.get_init_creds_password(context.ptr, ptr, principal.ptr, password.to_s, nil, nil, 0, service, nil)
+        Krb5.get_init_creds_password(context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
 
         new(context, ptr)
       end
