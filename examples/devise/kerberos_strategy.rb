@@ -16,10 +16,10 @@ module Devise
 
       def authenticate!
         resource = mapping.to.where(email: params['user']['email']).first
-        raise(:not_found_in_database) and return unless validate(resource)
+        fail(:not_found_in_database) and return unless validate(resource)
 
         principal = resource.kerberos_principal
-        raise(:no_kerberos_principal_for_resource) and return unless principal
+        fail(:no_kerberos_principal_for_resource) and return unless principal
 
         begin
           success!(resource) if KerberosAuthenticator.authenticate!(principal, params['user']['password'])
