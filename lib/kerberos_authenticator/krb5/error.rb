@@ -12,7 +12,7 @@ module KerberosAuthenticator
       def initialize(context_ptr, krb5_error_code)
         @error_code = krb5_error_code
         error_message, error_ptr = Krb5.get_error_message(context_ptr, krb5_error_code)
-        error_ptr = FFI::AutoPointer.new(error_ptr, self.class.finalize(context_ptr))
+        FFI::AutoPointer.new(error_ptr, self.class.finalize(context_ptr))
         super(String.new(error_message))
       end
 
