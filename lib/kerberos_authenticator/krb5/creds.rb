@@ -8,7 +8,7 @@ module KerberosAuthenticator
     attach_function :krb5_verify_init_creds_opt_init, [:pointer], :void
     attach_function :krb5_verify_init_creds_opt_set_ap_req_nofail, [:pointer, :bool], :void
 
-    attach_function :krb5_free_creds, [:krb5_context, :krb5_creds], :void
+    attach_function :krb5_free_cred_contents, [:krb5_context, :krb5_creds], :void
     attach_function :krb5_get_init_creds_opt_free, [:krb5_context, :pointer], :void
 
     # Credentials, or tickets, provided by a KDC for a user.
@@ -62,24 +62,20 @@ module KerberosAuthenticator
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_verify_init_creds_opt_set_ap_req_nofail.html krb5_verify_init_creds_opt_set_ap_req_nofail
       def verify(nofail = false, server_principal = nil, keytab = nil)
         verify_creds_opt = FFI::MemoryPointer.new :int, 2
-
         Krb5.verify_init_creds_opt_init(verify_creds_opt)
+        Krb5.verify_init_creds_opt_set_ap_req_nofail(verify_creds_opt, nofail)
 
-        begin
-          Krb5.verify_init_creds_opt_set_ap_req_nofail(verify_creds_opt, nofail)
+        server_princ_ptr = server_principal ? server_principal.ptr : nil
+        keytab_ptr = keytab ? keytab.ptr : nil
 
-          server_princ_ptr = server_principal ? server_principal.ptr : nil
-          keytab_ptr = keytab ? keytab.ptr : nil
-
-          Krb5.verify_init_creds(context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)
-        end
+        Krb5.verify_init_creds(context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)
 
         true
       end
 
       # @api private
       def self.finalize(context, ptr)
-        proc { Krb5.free_creds(context.ptr, ptr) }
+        proc { Krb5.krb5_free_cred_contents(context.ptr, ptr) and ptr.free}
       end
     end
   end
