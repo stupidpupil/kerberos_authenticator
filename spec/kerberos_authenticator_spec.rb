@@ -10,9 +10,26 @@
 
 describe KerberosAuthenticator do
   before do
+    if ENV['KA_SPEC_KRB5_CONFIG']
+      @krb5_config = Tempfile.new('ka_krb5_conf')
+      @krb5_config.write(Base64.decode64(ENV['KA_SPEC_KRB5_CONFIG']))
+      @krb5_config.close
+
+      ENV['KRB5_CONFIG'] = @krb5_config.path
+    end
+
+    if ENV['KA_SPEC_KEYTAB']
+      @keytab = Tempfile.new('krb5_kt')
+      @keytab.write(Base64.decode64(ENV['KA_SPEC_KEYTAB']))
+      @keytab.close
+
+      ENV['KA_SPEC_KT_PATH'] = @keytab.path
+    end
+
     KerberosAuthenticator.setup do |config|
       config.server = ENV['KA_SPEC_SERVER']
       config.keytab_path = ENV['KA_SPEC_KT_PATH']
+      config.krb5.use_secure_context = false
     end
 
     @username = ENV['KA_SPEC_USERNAME']
