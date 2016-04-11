@@ -49,13 +49,6 @@ describe KerberosAuthenticator do
       end
     end
 
-    describe 'when I set a Base64 encoded keytab string and try to authenticate with a valid username and password' do
-      it 'must return true' do
-        KerberosAuthenticator.keytab_base64 = Base64.encode64(File.read(ENV['KA_SPEC_KT_PATH']))
-        KerberosAuthenticator.authenticate!(@username, @password).should.equal true
-      end
-    end
-
     describe 'when I specify a server principal name for which I have no key and try to authenticate' do
       it 'must raise an Error' do
         KerberosAuthenticator.server = 'notaserver@NOTAREALM.FAIL'
