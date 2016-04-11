@@ -5,6 +5,10 @@ normal=$(tput sgr0)
 
 ret=0
 
+if [ -n "$KA_SPEC_RUN_INTEGRATION" ]; then
+  source integration_test_support/environment
+fi
+
 run_bacon ( ) {
   if [ -f $library_path ]; then
     echo "${bold}$library_name${normal}"
