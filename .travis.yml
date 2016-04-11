@@ -8,8 +8,7 @@ addons:
   apt:
     packages:
     - libkrb5-3
-    - libkrb5-26-heimdal
 cache:
 - bundler
 - apt
-script: bundle exec bash run_tests.sh
+script: bundle exec bacon -a
