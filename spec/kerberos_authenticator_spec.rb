@@ -11,7 +11,7 @@
 describe KerberosAuthenticator do
   before do
     if ENV['KA_SPEC_KRB5_CONFIG']
-      @krb5_config = Tempfile.new('ka_krb5_conf')
+      @krb5_config = Tempfile.new('ka_krb5_conf', encoding: 'ascii-8bit')
       @krb5_config.write(Base64.decode64(ENV['KA_SPEC_KRB5_CONFIG']))
       @krb5_config.close
 
