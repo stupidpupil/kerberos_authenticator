@@ -19,7 +19,7 @@ describe KerberosAuthenticator do
     end
 
     if ENV['KA_SPEC_KEYTAB']
-      @keytab = Tempfile.new('krb5_kt')
+      @keytab = Tempfile.new('krb5_kt', encoding: 'ascii-8bit')
       @keytab.write(Base64.decode64(ENV['KA_SPEC_KEYTAB']))
       @keytab.close
 
