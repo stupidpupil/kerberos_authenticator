@@ -51,7 +51,7 @@ describe KerberosAuthenticator do
 
     describe 'when I set a Base64 encoded keytab string and try to authenticate with a valid username and password' do
       it 'must return true' do
-        KerberosAuthenticator.keytab_base64 = Base64.encode64(File.read(ENV['KA_SPEC_KT_PATH']))
+        KerberosAuthenticator.keytab_base64 = ENV['KA_SPEC_KEYTAB']
         KerberosAuthenticator.authenticate!(@username, @password).should.equal true
       end
     end
