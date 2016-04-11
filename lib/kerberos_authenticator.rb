@@ -92,7 +92,7 @@ module KerberosAuthenticator
   def self.new_kt_tmp_file
     return nil unless keytab_base64
 
-    kt_tmp_file = Tempfile.new('krb5_kt', encoding: 'ascii-8bit')
+    kt_tmp_file = Tempfile.new('krb5_kt', encoding: 'binary')
     kt_tmp_file.write(Base64.decode64(keytab_base64))
     kt_tmp_file.close
 
