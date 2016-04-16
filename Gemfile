@@ -5,5 +5,10 @@ gem 'ffi'
 
 group :test do
   gem 'bacon'
-  gem 'simplecov'
+
+  if ENV['TRAVIS']
+    gem 'codeclimate-test-reporter', require: false
+  else
+    gem 'simplecov', require: false
+  end
 end

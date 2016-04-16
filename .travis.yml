@@ -8,6 +8,8 @@ addons:
   apt:
     packages:
     - libkrb5-3
+  code_climate:
+    repo_token: dfadc6527760b0ebbd6d0e2deaa7f72549f3879e8670b05373fac667925a2dda
 cache:
 - bundler
 - apt
