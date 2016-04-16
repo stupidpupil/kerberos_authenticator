@@ -35,16 +35,16 @@ module KerberosAuthenticator
   end
 
   # @!attribute [rw] server
-  #   @return [String] the server principal name to use when verifying the identity the KDC
+  #   @return [String] the server principal name to use when verifying the identity of the KDC
 
   # @!attribute [rw] service
   #   @return [String] the service principal name to request a ticket for when obtaining a user's credentials
 
   # @!attribute [rw] keytab_base64
-  #   @return [String] the keytab to use when verifying the identity the KDC represented as a Base64 encoded string (overrides keytab_path)
+  #   @return [String] the keytab to use when verifying the identity of the KDC represented as a Base64 encoded string (overrides keytab_path)
 
   # @!attribute [rw] keytab_path
-  #   @return [String] the path to the keytab to use when verifying the identity the KDC
+  #   @return [String] the path to the keytab to use when verifying the identity of the KDC
 
   @service = nil
 
