@@ -15,6 +15,10 @@ module KerberosAuthenticator
     class Creds
       attr_reader :context, :ptr
 
+      # The size, in bytes, of the krb5_creds structure.
+      # This differs between implementations and architectures.
+      SIZE_OF_KRB5_CREDS = 480
+
       # Requests initial credentials for principal using password from a KDC.
       # @param principal [Principal] the user's Principal
       # @param password [String] the user's password
@@ -28,7 +32,7 @@ module KerberosAuthenticator
         raise TypeError, 'expected Principal' unless principal.is_a? Principal
 
         context = principal.context
-        ptr = FFI::MemoryPointer.new :char, 480 # HACK
+        ptr = FFI::MemoryPointer.new :char, SIZE_OF_KRB5_CREDS
 
         Krb5.get_init_creds_password(context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
 
