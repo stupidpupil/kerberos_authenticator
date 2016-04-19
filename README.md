@@ -9,7 +9,9 @@ It uses [Ruby-FFI](https://github.com/ffi/ffi/) to call the Kerberos 5 library. 
 
 ## Example
 
-You will need to have 1) [configured Kerberos correctly](http://web.mit.edu/kerberos/krb5-1.14/doc/admin/install_kdc.html#edit-kdc-configuration-files), and 2) obtained a service (or machine principal) and a keytab for that principal.
+You will need to have 
+  1. [configured Kerberos correctly](http://web.mit.edu/kerberos/krb5-1.14/doc/admin/install_kdc.html#edit-kdc-configuration-files), and 
+  2. obtained a service (or machine principal) and a keytab for that principal.
 
 ```ruby
 require 'kerberos_authenticator'
