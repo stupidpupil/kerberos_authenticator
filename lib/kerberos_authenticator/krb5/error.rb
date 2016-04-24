@@ -8,6 +8,10 @@ module KerberosAuthenticator
     class Error < StandardError
       attr_reader :error_code
 
+      # Initializes a new Error using an error code and the relevant Context to provide a friendly error message.
+      # @param context_ptr [FFI::Pointer] A Context's pointer
+      # @param krb5_error_code [Integer] An integer used to convey a operation's status
+      # @return [Error]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_get_error_message.html krb5_get_error_message
       def initialize(context_ptr, krb5_error_code)
         @error_code = krb5_error_code
