@@ -1,6 +1,8 @@
+require File.expand_path('../lib/kerberos_authenticator/version', __FILE__)
+
 Gem::Specification.new do |s|
   s.name        = 'kerberos_authenticator'
-  s.version     = '0.0.5'
+  s.version     = KerberosAuthenticator::VERSION
   s.summary     = 'A Ruby library to authenticate a Kerberos user using their password. Uses Ruby-FFI to interface with the Kerberos library.'
   s.authors     = ['Adam Watkins']
   s.files       = Dir['lib/**/*.rb', 'lib/kerberos_authenticator.rb']

@@ -1,6 +1,7 @@
 require 'base64'
 require 'tempfile'
 
+require 'kerberos_authenticator/version'
 require 'kerberos_authenticator/error'
 require 'kerberos_authenticator/krb5'
 
