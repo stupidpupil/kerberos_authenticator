@@ -41,6 +41,8 @@ module KerberosAuthenticator
         self
       end
 
+      # @return [FFI::Pointer] the pointer to the krb5_context structure
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_context.html krb5_context
       def ptr
         @buffer.get_pointer(0)
       end

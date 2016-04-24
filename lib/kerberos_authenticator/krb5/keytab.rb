@@ -20,6 +20,10 @@ module KerberosAuthenticator
         new(context, buffer)
       end
 
+      # Initialize a new Keytab with a buffer containing a krb5_keytab structure, and define its finalizer.
+      # @param context [Context]
+      # @param buffer [FFI::Buffer]
+      # @return [Keytab]
       def initialize(context, buffer)
         @context = context
         @buffer = buffer
@@ -28,6 +32,8 @@ module KerberosAuthenticator
         self
       end
 
+      # @return [FFI::Pointer] the pointer to the krb5_keytab structure
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_keytab.html krb5_keytab
       def ptr
         @buffer.get_pointer(0)
       end

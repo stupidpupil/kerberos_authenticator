@@ -25,6 +25,10 @@ module KerberosAuthenticator
         new(context, buffer)
       end
 
+      # Initialize a new Principal with a buffer containing a krb5_principal structure, and define its finalizer.
+      # @param context [Context]
+      # @param buffer [FFI::Buffer]
+      # @return [Principal]
       def initialize(context, buffer)
         @context = context
         @buffer = buffer
@@ -42,6 +46,8 @@ module KerberosAuthenticator
         Creds.initial_creds_for_principal_with_a_password(self, password, service)
       end
 
+      # @return [FFI::Pointer] the pointer to the krb5_principal structure
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_principal.html krb5_principal
       def ptr
         @buffer.get_pointer(0)
       end
