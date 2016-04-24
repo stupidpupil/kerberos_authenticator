@@ -8,7 +8,7 @@
 
 This library is intended to make it easy to authenticate someone using their Kerberos password in your Ruby application.
 
-It uses [Ruby-FFI](https://github.com/ffi/ffi/) to call the Kerberos 5 library. I have tested it with the Kerberos library included with Mac OS X, and with the latest MIT and Heimdal libraries under Debian. (Tests on Travis are run using the MIT library.)
+It uses [Ruby-FFI](https://github.com/ffi/ffi/) to call the Kerberos 5 library. I have tested it with the Kerberos library included with Mac OS X, and with the latest MIT and Heimdal libraries under Debian. ([Tests on Travis](https://travis-ci.org/stupidpupil/kerberos_authenticator) are run using the MIT library.)
 
 ## Example
 
