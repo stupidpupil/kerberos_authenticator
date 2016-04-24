@@ -19,7 +19,9 @@ module KerberosAuthenticator
     end
 
     # @!attribute [rw] use_secure_context
+    #   @!scope class
     #   @return [Boolean] if Context.context should ignore environmental variables when returning a library context
+
 
     @use_secure_context = true
 
