@@ -20,10 +20,18 @@ module KerberosAuthenticator
         super(String.new(error_message))
       end
 
+      # Build a Proc to free the error message string once it's no longer in use.
+      # @return [Proc]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_error_message.html krb5_free_error_message
       def self.finalize(context_ptr)
         proc { |ptr| Krb5.free_error_message(context_ptr, ptr) }
       end
 
+      # Used to wrap Kerberos library functions that return a krb5_error_code.
+      # @return [Integer] always returns zero on success
+      # @yield [] A call to a Kerberos library function
+      # @yieldreturn [Integer] a krb5_error_code
+      # @raise [Error] if the krb5_error_code differed from zero
       def self.raise_if_error(context_ptr = nil)
         err = yield
         return 0 if err == 0
