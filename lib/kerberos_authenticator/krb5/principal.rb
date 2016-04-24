@@ -66,7 +66,10 @@ module KerberosAuthenticator
         copy
       end
 
+      # Builds a Proc to free the Principal once it's no longer in use.
       # @api private
+      # @return [Proc]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_principal.html krb5_free_principal
       def self.finalize(context, buffer)
         proc { Krb5.free_principal(context.ptr, buffer.get_pointer(0)) }
       end

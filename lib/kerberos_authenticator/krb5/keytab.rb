@@ -38,6 +38,8 @@ module KerberosAuthenticator
         @buffer.get_pointer(0)
       end
 
+      # @return [String] the type of the key table
+      # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_get_type.html kt_get_type
       def type
         Krb5.kt_get_type(context.ptr, ptr)
       end

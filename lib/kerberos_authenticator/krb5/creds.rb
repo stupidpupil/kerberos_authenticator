@@ -81,7 +81,10 @@ module KerberosAuthenticator
         true
       end
 
+      # Builds a Proc to free the credentials once they're no longer in use.
       # @api private
+      # @return [Proc]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_cred_contents.html krb5_free_cred_contents
       def self.finalize(context, ptr)
         proc { Krb5.free_cred_contents(context.ptr, ptr); ptr.free }
       end
