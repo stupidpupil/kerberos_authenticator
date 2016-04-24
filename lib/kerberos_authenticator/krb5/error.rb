@@ -26,6 +26,7 @@ module KerberosAuthenticator
       end
 
       # Build a Proc to free the error message string once it's no longer in use.
+      # @api private
       # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_error_message.html krb5_free_error_message
       def self.finalize(context_ptr)
