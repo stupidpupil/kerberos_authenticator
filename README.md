@@ -2,7 +2,9 @@
 [![Build Status](https://travis-ci.org/stupidpupil/kerberos_authenticator.svg?branch=master)](https://travis-ci.org/stupidpupil/kerberos_authenticator)
 [![Code Climate](https://codeclimate.com/github/stupidpupil/kerberos_authenticator/badges/gpa.svg)](https://codeclimate.com/github/stupidpupil/kerberos_authenticator)
 [![Test Coverage](https://codeclimate.com/github/stupidpupil/kerberos_authenticator/badges/coverage.svg)](https://codeclimate.com/github/stupidpupil/kerberos_authenticator/coverage)
+[![Docs](http://inch-ci.org/github/stupidpupil/kerberos_authenticator.svg?branch=master&style=shields)](http://www.rubydoc.info/github/stupidpupil/kerberos_authenticator)
 [![Gem](https://img.shields.io/gem/v/kerberos_authenticator.svg?maxAge=2592000)](https://rubygems.org/gems/kerberos_authenticator)
+
 
 This library is intended to make it easy to authenticate someone using their Kerberos password in your Ruby application.
 
