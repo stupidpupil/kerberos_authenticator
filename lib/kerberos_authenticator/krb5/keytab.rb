@@ -44,7 +44,10 @@ module KerberosAuthenticator
         Krb5.kt_get_type(context.ptr, ptr)
       end
 
+      # Builds a Proc to close the Keytab once its no longer in use.
       # @api private
+      # @return [Proc]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_close.html krb5_kt_close
       def self.finalize(context, buffer)
         proc { Krb5.kt_close(context.ptr, buffer.get_pointer(0)) }
       end

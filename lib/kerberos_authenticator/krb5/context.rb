@@ -47,8 +47,10 @@ module KerberosAuthenticator
         @buffer.get_pointer(0)
       end
 
+      # Builds a Proc to free the Context once its no longer in use.
       # @api private
-      def self.finalize(buffer)
+      # @return [Proc]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_context.html krb5_free_context
         proc { Krb5.free_context(buffer.get_pointer(0)) }
       end
     end
