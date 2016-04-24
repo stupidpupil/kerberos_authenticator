@@ -41,7 +41,7 @@ module KerberosAuthenticator
 
       # Initialize a new Keytab with a pointer to a krb5_keytab structure, and define its finalizer.
       # @param context [Context]
-      # @param buffer [FFI::MemoryPointer]
+      # @param ptr [FFI::MemoryPointer]
       # @return [Keytab]
       def initialize(context, ptr)
         @context = context
