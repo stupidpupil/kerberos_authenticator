@@ -6,6 +6,8 @@ require 'kerberos_authenticator/error'
 require 'kerberos_authenticator/krb5'
 
 module KerberosAuthenticator
+
+  # A convenience method to access the Krb5 module when using the setup method.
   # @return [Krb5]
   def self.krb5
     Krb5
