@@ -8,7 +8,7 @@ module KerberosAuthenticator
 
     # Version suffixes of the library to search for, in order:
     # - .3: MIT as of Debian 8, RHEL 7
-    # - .26: Heimdal as of Debian 8, RHEL 7 
+    # - .26: Heimdal as of Debian 8, RHEL 7
     # and then no suffix (which should pickup OS X Kerberos).
     PREFERRED_VERSIONS = ['.3', '.26', ''].freeze
 

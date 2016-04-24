@@ -8,7 +8,7 @@ module KerberosAuthenticator
     class Error < StandardError
       # @!attribute [r] error_code
       #   @return [Integer] the krb5_error_code used to convey the status of a Kerberos library operation.
-      #   @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_error_code.html krb5_error_code 
+      #   @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_error_code.html krb5_error_code
 
 
       attr_reader :error_code
