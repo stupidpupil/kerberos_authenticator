@@ -9,7 +9,7 @@ module KerberosAuthenticator
       attach_function :krb5_init_secure_context, [:buffer_out], :krb5_error_code
     rescue FFI::NotFoundError
       # Then we're probably using a version of the Heimdal library
-      # that doesn't support init_secure_context (and ignore environmental variables by default)
+      # that doesn't support init_secure_context (and ignores environmental variables by default)
       alias_method(:init_secure_context, :init_context)
       module_function :init_secure_context
     end
