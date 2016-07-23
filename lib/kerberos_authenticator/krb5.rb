@@ -38,6 +38,7 @@ end
 require 'kerberos_authenticator/krb5/attach_function'
 require 'kerberos_authenticator/krb5/error'
 require 'kerberos_authenticator/krb5/context'
+require 'kerberos_authenticator/krb5/data'
 require 'kerberos_authenticator/krb5/principal'
 require 'kerberos_authenticator/krb5/creds'
 require 'kerberos_authenticator/krb5/keytab'
