@@ -3,7 +3,8 @@
 #
 # The following environmental variables must be set:
 # - KA_SPEC_SERVER - server principal to use
-# - KA_SPEC_KT_PATH - path to keytab to use
+# - KA_SPEC_KEYTAB - Base64 encoded keytab for the server principal
+# - KA_SPEC_FAULTY_KEYTAB - Base64 encoded keytab for the server principal, *but* not a valid one
 # - KA_SPEC_USERNAME - username to use
 # - KA_SPEC_PASSWORD - password to use
 # - KA_SPEC_RUN_INTEGRATION - must be set to something
@@ -28,6 +29,7 @@ describe KerberosAuthenticator do
 
     KerberosAuthenticator.setup do |config|
       config.server = ENV['KA_SPEC_SERVER']
+      config.keytab_base64 = nil
       config.keytab_path = ENV['KA_SPEC_KT_PATH']
       config.krb5.use_secure_context = false
     end
@@ -53,6 +55,13 @@ describe KerberosAuthenticator do
       it 'must return true' do
         KerberosAuthenticator.keytab_base64 = ENV['KA_SPEC_KEYTAB']
         KerberosAuthenticator.authenticate!(@username, @password).should.equal true
+      end
+    end
+
+    describe 'when I set a keytab that the KDC does not know and try to authenticate with an apparently valid username and password' do
+      it 'must raise an Error' do
+        KerberosAuthenticator.keytab_base64 = ENV['KA_SPEC_FAULTY_KEYTAB']
+        -> { KerberosAuthenticator.authenticate!(@username, @password) }.should.raise KerberosAuthenticator::Error
       end
     end
 
