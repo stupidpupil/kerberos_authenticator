@@ -13,6 +13,7 @@ module KerberosAuthenticator
       #   @return [Integer] the krb5_error_code used to convey the status of a Kerberos library operation.
       #   @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_error_code.html krb5_error_code
 
+
       attr_reader :error_code
 
       # Initializes a new Error using an error code and the relevant Context to provide a friendly error message.
@@ -53,12 +54,12 @@ module KerberosAuthenticator
     class SetPassError < Error
       # @!attribute [r] result_code
       #   @return [Integer] the result code used to convey the result of a Set Password operation.
-
-      attr_reader :result_code
-
       # @!attribute [r] result_string
       #   @return [String] the full result string used to convey the result of a Set Password operation.
 
+
+
+      attr_reader :result_code
       attr_reader :result_string
 
       def initialize(result_code, result_string)
