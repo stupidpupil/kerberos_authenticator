@@ -80,13 +80,13 @@ describe KerberosAuthenticator do
 
     describe 'when changing a password to an empty one with a valid username and password' do
       it 'must raise an Error' do
-        -> { KerberosAuthenticator.change_password!(@username, @password, '') }.should.raise StandardError
+        -> { KerberosAuthenticator.change_password!(@username, @password, '') }.should.raise KerberosAuthenticator::Error
       end
     end
 
     describe 'when changing a password with an invalid username and password' do
       it 'must raise an Error' do
-        -> { KKerberosAuthenticator.change_password!(@username, "not#{@password}", @password) }.should.raise StandardError
+        -> { KerberosAuthenticator.change_password!(@username, "not#{@password}", @password) }.should.raise KerberosAuthenticator::Error
       end
     end
 

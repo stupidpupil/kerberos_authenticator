@@ -4,12 +4,14 @@ module KerberosAuthenticator
     attach_function :krb5_get_error_message, [:pointer, :krb5_error_code], :strptr
     attach_function :krb5_free_error_message, [:pointer, :pointer], :void
 
-    # A Kerberos library error
-    class Error < StandardError
+    # Generic exception class
+    class Error < StandardError; end
+
+    # A Kerberos error returned from a library call as a `krb5_error_code`.
+    class LibCallError < Error
       # @!attribute [r] error_code
       #   @return [Integer] the krb5_error_code used to convey the status of a Kerberos library operation.
       #   @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_error_code.html krb5_error_code
-
 
       attr_reader :error_code
 
@@ -41,8 +43,30 @@ module KerberosAuthenticator
       def self.raise_if_error(context_ptr = nil)
         err = yield
         return 0 if err == 0
-        raise Krb5::Error.new(context_ptr, err)
+        raise self.new(context_ptr, err)
       end
     end
+
+    # An error indicating a failure response from a server
+    # when trying to change a password.
+    # @see https://www.ietf.org/rfc/rfc3244.txt RFC 3244
+    class SetPassError < Error
+      # @!attribute [r] result_code
+      #   @return [Integer] the result code used to convey the result of a Set Password operation.
+
+      attr_reader :result_code
+
+      # @!attribute [r] result_string
+      #   @return [String] the full result string used to convey the result of a Set Password operation.
+
+      attr_reader :result_string
+
+      def initialize(result_code, result_string)
+        @result_code = result_code
+        @result_string = result_string
+        super(result_string.lines.first)
+      end
+    end
+
   end
 end

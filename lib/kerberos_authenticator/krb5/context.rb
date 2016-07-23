@@ -32,9 +32,9 @@ module KerberosAuthenticator
         @buffer = FFI::Buffer.new :pointer
 
         if secure
-          Krb5::Error.raise_if_error { Krb5.init_secure_context(@buffer) }
+          Krb5::LibCallError.raise_if_error { Krb5.init_secure_context(@buffer) }
         else
-          Krb5::Error.raise_if_error { Krb5.init_context(@buffer) }
+          Krb5::LibCallError.raise_if_error { Krb5.init_context(@buffer) }
         end
 
         ObjectSpace.define_finalizer(self, self.class.finalize(@buffer))
