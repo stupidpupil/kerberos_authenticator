@@ -15,6 +15,7 @@ module KerberosAuthenticator
       # Read the data into a string.
       # @return [String]
       def read_string
+        return "" if self[:length].zero?
         self[:data_ptr].read_string_length(self[:length])
       end
 
