@@ -36,6 +36,11 @@ module KerberosAuthenticator
     true
   end
 
+  def self.change_password!(username, old_password, new_password)
+    user = Krb5::Principal.new_with_name(username)
+    user.change_password(old_password, new_password)
+  end
+
   # @!attribute [rw] keytab_base64
   #   @!scope class
   #   @return [String] the keytab to use when verifying the identity of the KDC represented as a Base64 encoded string (overrides keytab_path)
