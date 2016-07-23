@@ -16,7 +16,7 @@ module KerberosAuthenticator
       # @return [String]
       def read_string
         return "" if self[:length].zero?
-        self[:data_ptr].read_string_length(self[:length])
+        self[:data_ptr].read_bytes(self[:length])
       end
 
       # Builds a Proc to free the contents of the data structure once it's no longer in use.
