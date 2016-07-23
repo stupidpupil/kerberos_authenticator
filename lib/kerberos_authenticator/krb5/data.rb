@@ -2,7 +2,7 @@ module KerberosAuthenticator
   module Krb5
     attach_function :krb5_free_data_contents, [:krb5_context, :pointer], :void
 
-    # Generic data structure.
+    # Generic Kerberos library data structure.
     # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_data.html krb5_data
     class Data < FFI::Struct
       layout :magic, :krb5_error_code, :length, :int, :data_ptr, :pointer

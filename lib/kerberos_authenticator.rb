@@ -36,6 +36,9 @@ module KerberosAuthenticator
     true
   end
 
+  # Change a user's password by authenticating with their current one.
+  # @raise [Error] if the attempt to change the password fails
+  # @return [TrueClass] always returns true if no error was raised
   def self.change_password!(username, old_password, new_password)
     user = Krb5::Principal.new_with_name(username)
     user.change_password(old_password, new_password)
