@@ -71,7 +71,7 @@ module KerberosAuthenticator
       # @return [TrueClass] always returns true if no error was raised
       def change_password(oldpw, new_pw)
         changepw_creds = self.initial_creds_with_password(oldpw, 'kadmin/changepw')
-        changepw_creds.set_password(new_pw)
+        changepw_creds.set_password(new_pw, self)
       end
 
       # Builds a Proc to free the Principal once it's no longer in use.
