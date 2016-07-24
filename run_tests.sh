@@ -27,7 +27,7 @@ library_name='MacPorts MIT'
 library_path='/opt/local/lib/libkrb5.dylib'
 run_bacon
 
-library_name='OS X Heimdal'
+library_name='OS X built-in'
 library_path='/usr/lib/libkrb5.dylib'
 run_bacon
 
