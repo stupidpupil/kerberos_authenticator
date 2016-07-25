@@ -120,7 +120,17 @@ module KerberosAuthenticator
       kt = Krb5::Keytab.new_with_name("FILE:#{kt_tmp_file.path}")
     elsif keytab_path
       kt = Krb5::Keytab.new_with_name("FILE:#{keytab_path}")
+    else
+      kt = Krb5::Keytab.default
     end
+
+    # FIXME: This seems to protect against segfaults in OS X Kerberos as of 10.9.5
+    #   when the keytab isn't accessible or doesn't exist.
+    #   It probably indicates an underlying memory management mistake.
+    #
+    # REVIEW: It's hard to say whether calling this or leaving it out produces
+    #   better error messages.
+    kt.assert_has_content
 
     begin
       yield kt

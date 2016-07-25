@@ -65,6 +65,14 @@ describe KerberosAuthenticator do
       end
     end
 
+    describe 'when I set no keytab and try to authenticate with an apparently valid username and password' do
+      it 'must raise an Error' do
+        KerberosAuthenticator.keytab_path = nil
+        KerberosAuthenticator.keytab_base64 = nil
+        -> { KerberosAuthenticator.authenticate!(@username, @password) }.should.raise KerberosAuthenticator::Error
+      end
+    end
+
     describe 'when I specify a server principal name for which I have no key and try to authenticate' do
       it 'must raise an Error' do
         KerberosAuthenticator.server = 'notaserver@NOTAREALM.FAIL'
