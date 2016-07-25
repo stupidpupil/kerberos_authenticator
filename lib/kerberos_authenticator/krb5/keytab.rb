@@ -10,7 +10,11 @@ module KerberosAuthenticator
     attach_function :krb5_kt_get_type, [:krb5_context, :krb5_keytab], :string
     attach_function :krb5_kt_get_name, [:krb5_context, :krb5_keytab, :buffer_out, :int], :krb5_error_code
 
-    attach_function :krb5_kt_have_content, [:krb5_context, :krb5_keytab], :krb5_error_code
+    begin
+      #attach_function :krb5_kt_have_content, [:krb5_context, :krb5_keytab], :krb5_error_code
+    rescue FFI::NotFoundError
+      # REVIEW: Then we're probably using an old version of the library that doesn't support kt_have_content.
+    end
 
     # Storage for locally-stored keys.
     class Keytab
@@ -64,11 +68,17 @@ module KerberosAuthenticator
         Krb5.kt_get_type(context.ptr, ptr)
       end
 
+      # Checks if the underlying keytab file or other store exists and contains entries.
+      # (When `krb5_kt_have_content` isn't provided by the Kerberos library, then some limited checks.)
       # @return [TrueClass] if the keytab exists and contains entries
       # @raises [Error] if there is a problem finding entries in the keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_have_content.html krb5_kt_have_content
       def assert_has_content
-        Krb5.kt_have_content(context.ptr, ptr)
+        if defined?(Krb5.kt_have_content)
+          Krb5.kt_have_content(context.ptr, ptr)
+        else # HACK
+          raise Error.new("Could not read #{name}") if file? and !FileTest.readable?(path)
+        end
         true
       end
 
@@ -77,7 +87,7 @@ module KerberosAuthenticator
         begin
           assert_has_content
           true
-        rescue LibCallError => e
+        rescue Error => e
           false
         end
       end
