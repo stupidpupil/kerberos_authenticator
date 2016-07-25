@@ -25,7 +25,7 @@ module KerberosAuthenticator
         @error_code = krb5_error_code
         error_message, error_ptr = Krb5.get_error_message(context_ptr, krb5_error_code)
         FFI::AutoPointer.new(error_ptr, self.class.finalize(context_ptr))
-        super(String.new(error_message))
+        super String.new(error_message).force_encoding('UTF-8')
       end
 
       # Build a Proc to free the error message string once it's no longer in use.
@@ -64,8 +64,8 @@ module KerberosAuthenticator
 
       def initialize(result_code, result_string)
         @result_code = result_code
-        @result_string = result_string
-        super(result_string.lines.first.strip)
+        @result_string = result_string.force_encoding('UTF-8')
+        super @result_string.lines.first.strip
       end
     end
 
