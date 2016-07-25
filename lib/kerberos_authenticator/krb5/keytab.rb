@@ -68,6 +68,16 @@ module KerberosAuthenticator
         buffer.read_bytes(255).force_encoding('UTF-8').split("\x00",2)[0]
       end
 
+      # @return [Boolean] if the keytab has a type of 'FILE' or 'file'
+      def file?
+        type =~ /^FILE$/i
+      end
+
+      # @return [String, nil] the path to the keytab file if the keytab is a file, nil otherwise
+      def path
+        file? ? name.match(/^(FILE:)?(.+)$/)[2] : nil
+      end
+
       # Builds a Proc to close the Keytab once its no longer in use.
       # @api private
       # @return [Proc]

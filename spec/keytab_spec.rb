@@ -11,18 +11,18 @@ describe KerberosAuthenticator::Krb5::Keytab do
   end
 
   describe 'when I try to resolve a Keytab with a type of FILE and a path' do
-    it 'must return a Keytab with that type and name' do
+    it 'must return a Keytab with that type and path' do
       kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:/etc/krb5.keytab')
-      kt.name.should.match /^(FILE:)?\/etc\/krb5.keytab$/
       kt.type.should.equal 'FILE'
+      kt.path.should.equal '/etc/krb5.keytab'
     end
   end
 
   describe 'when I try to resolve a Keytab with a type of FILE and a non-ASCII path' do
-    it 'must return a Keytab with that type and name' do
+    it 'must return a Keytab with that type and path' do
       kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:/итд/krb5.keytab')
-      kt.name.should.match /^(FILE:)?\/итд\/krb5.keytab$/
       kt.type.should.equal 'FILE'
+      kt.path.should.equal '/итд/krb5.keytab'
     end
   end
 
