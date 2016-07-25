@@ -13,6 +13,7 @@ module KerberosAuthenticator
       def initialize(pointer = nil)
         super(pointer)
         ObjectSpace.define_finalizer(self, self.class.finalize(self.pointer))
+        self
       end
 
       # Read the data into a string.
@@ -26,7 +27,7 @@ module KerberosAuthenticator
       # @api private
       # return [Proc]
       def self.finalize(pointer)
-        proc { Krb5.free_data_contents(Context.context.ptr, pointer) }
+        proc { Krb5.free_data_contents(Context.context.ptr, pointer); pointer.free}
       end
 
     end

@@ -15,7 +15,7 @@ module KerberosAuthenticator
 
     # Credentials, or tickets, provided by a KDC for a user.
     class Creds
-      attr_reader :context, :ptr
+      attr_reader :ptr
 
       # The size, in bytes, of the krb5_creds structure.
       # This differs between implementations and architectures.
@@ -33,24 +33,21 @@ module KerberosAuthenticator
       def self.initial_creds_for_principal_with_a_password(principal, password, service = nil)
         raise TypeError, 'expected Principal' unless principal.is_a? Principal
 
-        context = principal.context
         ptr = FFI::MemoryPointer.new :char, SIZE_OF_KRB5_CREDS
 
-        Krb5.get_init_creds_password(context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
+        Krb5.get_init_creds_password(Context.context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
 
-        new(context, ptr)
+        new(ptr)
       end
 
       # Initialize a new Keytab with a pointer to a krb5_keytab structure, and define its finalizer.
-      # @param context [Context]
       # @param ptr [FFI::MemoryPointer]
       # @return [Keytab]
-      def initialize(context, ptr)
-        @context = context
+      def initialize(ptr)
         @ptr = ptr
 
         @ptr.autorelease = false
-        ObjectSpace.define_finalizer(self, self.class.finalize(context, ptr))
+        ObjectSpace.define_finalizer(self, self.class.finalize(ptr))
 
         self
       end
@@ -78,7 +75,7 @@ module KerberosAuthenticator
         server_princ_ptr = server_principal ? server_principal.ptr : nil
         keytab_ptr = keytab ? keytab.ptr : nil
 
-        Krb5.verify_init_creds(context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)
+        Krb5.verify_init_creds(Context.context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)
 
         true
       end
@@ -98,7 +95,7 @@ module KerberosAuthenticator
         result_code_string = Data.new
         result_string = Data.new
 
-        Krb5.set_password(context.ptr, ptr, newpw, change_password_for_ptr, result_code, result_code_string.pointer, result_string.pointer)
+        Krb5.set_password(Context.context.ptr, ptr, newpw, change_password_for_ptr, result_code, result_code_string.pointer, result_string.pointer)
 
         result_code = result_code.read_uint
         result_string = result_string.read_string.force_encoding('UTF-8')
@@ -111,8 +108,8 @@ module KerberosAuthenticator
       # @api private
       # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_cred_contents.html krb5_free_cred_contents
-      def self.finalize(context, ptr)
-        proc { Krb5.free_cred_contents(context.ptr, ptr); ptr.free }
+      def self.finalize(ptr)
+        proc { Krb5.free_cred_contents(Context.context.ptr, ptr); ptr.free }
       end
     end
   end
