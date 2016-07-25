@@ -17,7 +17,7 @@ describe KerberosAuthenticator::Krb5::Keytab do
     end
   end
 
-  describe 'when I try to resolve a Keytab with a type of FILE and a UTF-8 path' do
+  describe 'when I try to resolve a Keytab with a type of FILE and a non-ASCII path' do
     it 'must return a Keytab with that name' do
       KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:/итд/krb5.keytab').name.should.match /\/итд\/krb5.keytab$/
     end

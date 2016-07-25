@@ -59,7 +59,7 @@ module KerberosAuthenticator
         Krb5.unparse_name(context.ptr, ptr, out_ptr)
 
         str_ptr = out_ptr.read_pointer
-        copy = String.new(str_ptr.read_string)
+        copy = String.new(str_ptr.read_string).force_encoding('UTF-8')
 
         Krb5.free_unparsed_name(context.ptr, str_ptr)
 
