@@ -2,6 +2,17 @@
 # - the FFI interface can load the library and call functions
 # - the error handling in the FFI interface is working
 describe KerberosAuthenticator::Krb5::Keytab do
+  before do
+    if ENV['KA_SPEC_KEYTAB']
+      keytab = Tempfile.new('krb5_kt', encoding: 'binary')
+      keytab.write(Base64.decode64(ENV['KA_SPEC_KEYTAB']))
+      keytab.close
+
+      ENV['KA_SPEC_KT_PATH'] = keytab.path
+    end
+
+    @keytab_path = ENV['KA_SPEC_KT_PATH']
+  end
 
   describe 'when I try to resolve the default Keytab' do
     it 'must return a Keytab' do
@@ -23,6 +34,22 @@ describe KerberosAuthenticator::Krb5::Keytab do
       kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:/итд/krb5.keytab')
       kt.type.should.equal 'FILE'
       kt.path.should.equal '/итд/krb5.keytab'
+    end
+  end
+
+  describe 'when I try to check the contents of a Keytab that does not exist' do
+    it 'must return false' do
+      kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:./does/not/exist.keytab')
+      kt.has_content?.should.equal false
+    end
+  end
+
+  if ENV['KA_SPEC_KT_PATH']
+    describe 'when I try to check the contents of a Keytab that does exist and contain entries' do
+      it 'must return true' do
+        kt = KerberosAuthenticator::Krb5::Keytab.new_with_name("FILE:#{@keytab_path}")
+        kt.has_content?.should.equal true
+      end
     end
   end
 
