@@ -63,8 +63,8 @@ module KerberosAuthenticator
       attr_reader :result_string
 
       # Initializes a new SetPassError using an RFC 3244 result code and result string supplied in a server response.
-      # @param [Integer] the result code used to convey the result of a Set Password operation
-      # @param [String]  the full result string used to convey the result of a Set Password operation.
+      # @param result_code [Integer] the result code used to convey the result of a Set Password operation
+      # @param result_string [String]  the full result string used to convey the result of a Set Password operation.
       # @return [SetPassError]
       def initialize(result_code, result_string)
         @result_code = result_code

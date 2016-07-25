@@ -38,6 +38,7 @@ module KerberosAuthenticator
         self
       end
 
+      # Calls Creds.initial_creds_for_principal_with_a_password(self, password, service)
       # @param password [String]
       # @param service [String]
       # @return [Creds]

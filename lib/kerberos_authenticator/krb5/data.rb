@@ -7,6 +7,9 @@ module KerberosAuthenticator
     class Data < FFI::Struct
       layout :magic, :krb5_error_code, :length, :int, :data_ptr, :pointer
 
+      # Allocate and zero a new krb5_data struct or cast some existing memory to one.
+      # @param pointer [Pointer] a pointer to existing memory to cast to a krb5_data struct
+      # @see https://github.com/ffi/ffi/wiki/Structs Structs
       def initialize(*args)
         super(*args)
         ObjectSpace.define_finalizer(self, self.class.finalize(self.pointer))
