@@ -10,6 +10,8 @@ module KerberosAuthenticator
     attach_function :krb5_kt_get_type, [:krb5_context, :krb5_keytab], :string
     attach_function :krb5_kt_get_name, [:krb5_context, :krb5_keytab, :buffer_out, :int], :krb5_error_code
 
+    attach_function :krb5_kt_have_content, [:krb5_context, :krb5_keytab], :krb5_error_code
+
     # Storage for locally-stored keys.
     class Keytab
       attr_reader :context
@@ -55,6 +57,24 @@ module KerberosAuthenticator
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_get_type.html kt_get_type
       def type
         Krb5.kt_get_type(context.ptr, ptr)
+      end
+
+      # @return [TrueClass] if the keytab exists and contains entries
+      # @raises [Error] if there is a problem finding entries in the keytab
+      # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_have_content.html krb5_kt_have_content
+      def assert_has_content
+        Krb5.kt_have_content(context.ptr, ptr)
+        true
+      end
+
+      # @return [Boolean] whether the keytab exists and contains entries
+      def has_content?
+        begin
+          assert_has_content
+          true
+        rescue LibCallError => e
+          false
+        end
       end
 
       # The maximum length, in bytes, that can be read by #name .
