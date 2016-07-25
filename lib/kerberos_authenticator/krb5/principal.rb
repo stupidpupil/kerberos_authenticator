@@ -10,30 +10,25 @@ module KerberosAuthenticator
 
     # A Kerberos principal identifying a user, service or machine.
     class Principal
-      attr_reader :context
-
       # Convert a string representation of a principal name into a new Principal.
       # @param name [String] a string representation of a principal name
-      # @param context [Context] a Kerberos library context
       # @return [Principal]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_parse_name.html krb5_parse_name
-      def self.new_with_name(name, context = Context.context)
+      def self.new_with_name(name)
         raise ArgumentError, 'name cannot be empty' if name.empty?
 
         buffer = FFI::Buffer.new :pointer
-        Krb5.parse_name(context.ptr, name, buffer)
-        new(context, buffer)
+        Krb5.parse_name(Context.context.ptr, name, buffer)
+        new(buffer)
       end
 
       # Initialize a new Principal with a buffer containing a krb5_principal structure, and define its finalizer.
-      # @param context [Context]
       # @param buffer [FFI::Buffer]
       # @return [Principal]
-      def initialize(context, buffer)
-        @context = context
+      def initialize(buffer)
         @buffer = buffer
 
-        ObjectSpace.define_finalizer(self, self.class.finalize(context, buffer))
+        ObjectSpace.define_finalizer(self, self.class.finalize(buffer))
 
         self
       end
@@ -57,12 +52,12 @@ module KerberosAuthenticator
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_unparse_name.html krb5_unparse_name
       def name
         out_ptr = FFI::MemoryPointer.new(:pointer, 1)
-        Krb5.unparse_name(context.ptr, ptr, out_ptr)
+        Krb5.unparse_name(Context.context.ptr, ptr, out_ptr)
 
         str_ptr = out_ptr.read_pointer
         copy = String.new(str_ptr.read_string).force_encoding('UTF-8')
 
-        Krb5.free_unparsed_name(context.ptr, str_ptr)
+        Krb5.free_unparsed_name(Context.context.ptr, str_ptr)
 
         copy
       end
@@ -79,8 +74,8 @@ module KerberosAuthenticator
       # @api private
       # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_principal.html krb5_free_principal
-      def self.finalize(context, buffer)
-        proc { Krb5.free_principal(context.ptr, buffer.get_pointer(0)) }
+      def self.finalize(buffer)
+        proc { Krb5.free_principal(Context.context.ptr, buffer.get_pointer(0)) }
       end
     end
   end
