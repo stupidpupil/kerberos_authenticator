@@ -10,8 +10,8 @@ module KerberosAuthenticator
       # Allocate and zero a new krb5_data struct or cast some existing memory to one.
       # @param pointer [Pointer] a pointer to existing memory to cast to a krb5_data struct
       # @see https://github.com/ffi/ffi/wiki/Structs Structs
-      def initialize(*args)
-        super(*args)
+      def initialize(pointer = nil)
+        super(pointer)
         ObjectSpace.define_finalizer(self, self.class.finalize(self.pointer))
       end
 
