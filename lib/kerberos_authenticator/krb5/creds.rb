@@ -101,7 +101,7 @@ module KerberosAuthenticator
         Krb5.set_password(context.ptr, ptr, newpw, change_password_for_ptr, result_code, result_code_string.pointer, result_string.pointer)
 
         result_code = result_code.read_uint
-        result_string = result_string.read_string
+        result_string = result_string.read_string.force_encoding('UTF-8')
         raise SetPassError.new(result_code, result_string) if result_code > 0
 
         true

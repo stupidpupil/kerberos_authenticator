@@ -68,7 +68,7 @@ module KerberosAuthenticator
       # @return [SetPassError]
       def initialize(result_code, result_string)
         @result_code = result_code
-        @result_string = result_string.force_encoding('UTF-8')
+        @result_string = result_string
         super @result_string.lines.first.strip
       end
     end
