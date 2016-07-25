@@ -20,16 +20,6 @@ You will need to have
 require 'kerberos_authenticator'
 
 KerberosAuthenticator.setup do |config|
-  # Information for the Kerberos 5 library passed through environmental variables is ignored by default.
-  # (See http://web.mit.edu/kerberos/krb5-1.14/doc/admin/env_variables.html )
-  # If you want to use these environmental variables, uncomment the line below.
-  # (This has no effect if you're using the Heimdal library.)
-  # config.krb5.use_secure_context = false
-
-  # The authenticator requests ticket-granting-tickets (TGTs) by default.
-  # You can request tickets for a specific service by editing the line below.
-  # config.service = 'service@EXAMPLE.ORG'
-
   # Configure the server principal and keytab used to verify the credentials received from the KDC.
   # Setting these to nil will let the underlying Kerberos 5 library try its own defaults.
   config.server = 'server@EXAMPLE.ORG'
@@ -47,6 +37,9 @@ rescue KerberosAuthenticator::Error => e
   puts 'Failed to authenticate!'
   puts e.inspect
 end
+
+# You can change passwords too.
+KerberosAuthenticator.change_password!('user@EXAMPLE.ORG', 'mypassword', 'my_new_password')
 ```
 
 ## Zanarotti attack
@@ -58,12 +51,13 @@ In order to avoid the Zanarotti attack, your application has to confirm the iden
 
 You can read more about this in the [MIT Kerberos documentation](http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/init_creds.html). 
 
-I wrote this gem specifically because most Ruby examples of using Kerberos to authenticate a user with their username and password failed to verify the identity of the KDC, and most Ruby interfaces to Kerberos 5 libraries did not support the `krb5_verify_init_creds` function necessary to implement this verification.
+I wrote this gem specifically because existing Ruby examples of using Kerberos to authenticate a user with their username and password failed to verify the identity of the KDC, and existing Ruby interfaces to Kerberos 5 libraries did not support the `krb5_verify_init_creds` function necessary to implement this verification.
 
-### Vulnerable Ruby examples
-* https://github.com/atomaka/devise-kerberos-authenticatable
-* https://github.com/naffis/omniauth-krb5
-* https://github.com/sleeper/rack-auth-krb
+## Thread safety and Memory leaks
+I believe that, when used with a recent version of the MIT Kerberos library, this gem is both thread-safe and free of memory leaks. Please do report any issues that you find.
 
 ## LoadError
 If requiring the gem results in a LoadError, you can specify how to find your Kerberos 5 library by setting the `FFI_KRB5_LIBRARY_NAME` environmental variable. (Or you could install the development files for your Kerberos 5 library, which should almost always allow the gem to find the library.)
+
+## License
+This gem is licensed under the [MIT License](http://choosealicense.com/licenses/mit/).
