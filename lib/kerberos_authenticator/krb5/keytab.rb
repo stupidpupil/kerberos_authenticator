@@ -7,8 +7,13 @@ module KerberosAuthenticator
 
     attach_function :krb5_kt_close, [:krb5_context, :krb5_keytab], :krb5_error_code
 
-    attach_function :krb5_kt_get_type, [:krb5_context, :krb5_keytab], :string
-    attach_function :krb5_kt_get_name, [:krb5_context, :krb5_keytab, :buffer_out, :int], :krb5_error_code
+    begin
+      # Heimdal
+      attach_function :krb5_kt_get_full_name, [:krb5_context, :krb5_keytab, :pointer], :krb5_error_code
+    rescue FFI::NotFoundError
+      # MIT
+      attach_function :krb5_kt_get_name, [:krb5_context, :krb5_keytab, :buffer_out, :int], :krb5_error_code
+    end
 
     begin
       attach_function :krb5_kt_have_content, [:krb5_context, :krb5_keytab], :krb5_error_code
@@ -57,12 +62,6 @@ module KerberosAuthenticator
         self
       end
 
-      # @return [String] the type of the key table
-      # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_get_type.html kt_get_type
-      def type
-        Krb5.kt_get_type(Context.context.ptr, ptr)
-      end
-
       # Checks if the underlying keytab file or other store exists and contains entries.
       # (When `krb5_kt_have_content` isn't provided by the Kerberos library, then only some very limited checks are performed.)
       # @return [TrueClass] if the keytab exists and contains entries
@@ -88,12 +87,34 @@ module KerberosAuthenticator
       # The maximum length, in bytes, that can be read by #name .
       GET_NAME_MAX_LENGTH = 512
 
+      # The seperator between the type and the residual in a keytab's name
+      FULL_NAME_DELIMITER = ':'
+
       # @return [String] the name of the key table
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_get_name.html kt_get_name
       def name
-        buffer = FFI::Buffer.new :char, GET_NAME_MAX_LENGTH
-        Krb5.kt_get_name(Context.context.ptr, ptr, buffer, GET_NAME_MAX_LENGTH)
-        buffer.read_bytes(255).force_encoding('UTF-8').split("\x00", 2)[0]
+        if defined?(Krb5.kt_get_full_name)
+          pointer = FFI::MemoryPointer.new :pointer
+          Krb5.kt_get_full_name(Context.context.ptr, ptr, pointer)
+          pointer = pointer.read_pointer
+          copy = String.new(pointer.read_string).force_encoding('UTF-8')
+          Krb5.xfree(pointer)
+          copy
+        else
+          buffer = FFI::Buffer.new :char, GET_NAME_MAX_LENGTH
+          Krb5.kt_get_name(Context.context.ptr, ptr, buffer, GET_NAME_MAX_LENGTH)
+          buffer.read_bytes(255).force_encoding('UTF-8').split("\x00", 2)[0]
+        end
+      end
+
+      # @return [String] the type of the key table
+      def type
+        name.split(FULL_NAME_DELIMITER, 2).first
+      end
+
+      # @return [String] the residual of the key table, which means different things depending on the type
+      def residual
+        name.split(FULL_NAME_DELIMITER, 2).last
       end
 
       # @return [Boolean] if the keytab has a type of 'FILE' or 'file'
@@ -103,7 +124,7 @@ module KerberosAuthenticator
 
       # @return [String, nil] the path to the keytab file if the keytab is a file, nil otherwise
       def path
-        file? ? name.match(/^(FILE:)?(.+)$/)[2] : nil
+        file? ? residual : nil
       end
 
       # Closes a Keytab
