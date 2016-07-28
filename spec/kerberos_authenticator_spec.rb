@@ -105,4 +105,6 @@ describe KerberosAuthenticator do
       -> { KerberosAuthenticator.authenticate!('notauser@NOTREALM.FAIL', 'notapass') }.should.raise KerberosAuthenticator::Error
     end
   end
+
+  GC.start # REVIEW: This should ensure that the .release method gets called for the Krb5 objects
 end
