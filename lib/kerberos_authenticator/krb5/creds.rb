@@ -34,7 +34,6 @@ module KerberosAuthenticator
         raise TypeError, 'expected Principal' unless principal.is_a? Principal
 
         ptr = FFI::MemoryPointer.new :char, SIZE_OF_KRB5_CREDS
-
         Krb5.get_init_creds_password(Context.context.ptr, ptr, principal.ptr, password.to_str, nil, nil, 0, service, nil)
 
         new(ptr)
@@ -44,12 +43,13 @@ module KerberosAuthenticator
       # @param ptr [FFI::MemoryPointer]
       # @return [Keytab]
       def initialize(ptr)
+        # HACK: AutoPointer won't accept a MemoryPointer, only a Pointer
+        ptr.autorelease = false
+        ptr = FFI::Pointer.new(ptr)
+
+        ptr = FFI::AutoPointer.new ptr, self.class.method(:release)
+
         @ptr = ptr
-
-        @ptr.autorelease = false
-        ObjectSpace.define_finalizer(self, self.class.finalize(ptr))
-
-        self
       end
 
       # Calls #verify with nofail as true.
@@ -87,7 +87,7 @@ module KerberosAuthenticator
       # @raise [Error] if there is a problem making the password change request
       # @raise [Error] if server responds that the password change request failed
       # @return [TrueClass] always returns true if no error was raised
-      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_set_password.html krb5_set_password 
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_set_password.html krb5_set_password
       def set_password(newpw, change_password_for = nil)
         change_password_for_ptr = change_password_for ? change_password_for.ptr : nil
 
@@ -104,12 +104,11 @@ module KerberosAuthenticator
         true
       end
 
-      # Builds a Proc to free the credentials once they're no longer in use.
+      # Free the contents of the Creds structure
       # @api private
-      # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_cred_contents.html krb5_free_cred_contents
-      def self.finalize(ptr)
-        proc { Krb5.free_cred_contents(Context.context.ptr, ptr); ptr.free }
+      def self.release(pointer)
+        Krb5.free_cred_contents(Context.context.ptr, pointer)
       end
     end
   end

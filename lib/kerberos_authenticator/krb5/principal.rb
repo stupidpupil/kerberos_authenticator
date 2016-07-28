@@ -10,6 +10,8 @@ module KerberosAuthenticator
 
     # A Kerberos principal identifying a user, service or machine.
     class Principal
+      attr_reader :ptr
+
       # Convert a string representation of a principal name into a new Principal.
       # @param name [String] a string representation of a principal name
       # @return [Principal]
@@ -17,18 +19,16 @@ module KerberosAuthenticator
       def self.new_with_name(name)
         raise ArgumentError, 'name cannot be empty' if name.empty?
 
-        buffer = FFI::Buffer.new :pointer
-        Krb5.parse_name(Context.context.ptr, name, buffer)
-        new(buffer)
+        pointer = FFI::MemoryPointer.new :pointer
+        Krb5.parse_name(Context.context.ptr, name, pointer)
+        new(pointer)
       end
 
       # Initialize a new Principal with a buffer containing a krb5_principal structure, and define its finalizer.
-      # @param buffer [FFI::Buffer]
+      # @param buffer [FFI::Pointer]
       # @return [Principal]
-      def initialize(buffer)
-        @buffer = buffer
-
-        ObjectSpace.define_finalizer(self, self.class.finalize(buffer))
+      def initialize(pointer)
+        @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
 
         self
       end
@@ -40,12 +40,6 @@ module KerberosAuthenticator
       # @see Creds.initial_creds_for_principal_with_a_password
       def initial_creds_with_password(password, service = nil)
         Creds.initial_creds_for_principal_with_a_password(self, password, service)
-      end
-
-      # @return [FFI::Pointer] the pointer to the krb5_principal structure
-      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_principal.html krb5_principal
-      def ptr
-        @buffer.get_pointer(0)
       end
 
       # @return [String] a string representation of the principal's name
@@ -70,12 +64,11 @@ module KerberosAuthenticator
         changepw_creds.set_password(new_pw, self)
       end
 
-      # Builds a Proc to free the Principal once it's no longer in use.
+      # Free a Principal
       # @api private
-      # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_principal.html krb5_free_principal
-      def self.finalize(buffer)
-        proc { Krb5.free_principal(Context.context.ptr, buffer.get_pointer(0)) }
+      def self.release(pointer)
+        Krb5.free_principal(Context.context.ptr, pointer)
       end
     end
   end

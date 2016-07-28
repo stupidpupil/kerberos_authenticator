@@ -24,16 +24,15 @@ module KerberosAuthenticator
       def initialize(context_ptr, krb5_error_code)
         @error_code = krb5_error_code
         error_message, error_ptr = Krb5.get_error_message(context_ptr, krb5_error_code)
-        FFI::AutoPointer.new(error_ptr, self.class.finalize(context_ptr))
+        self.class.release(error_ptr)
         super String.new(error_message).force_encoding('UTF-8')
       end
 
-      # Build a Proc to free the error message string once it's no longer in use.
+      # Free an error message
       # @api private
-      # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_error_message.html krb5_free_error_message
-      def self.finalize(context_ptr)
-        proc { |ptr| Krb5.free_error_message(context_ptr, ptr) }
+      def self.release(pointer)
+        Krb5.free_error_message(Context.context.ptr, pointer)
       end
 
       # Used to wrap Kerberos library functions that return a krb5_error_code.
@@ -43,7 +42,7 @@ module KerberosAuthenticator
       # @raise [LibCallError] if the krb5_error_code differed from zero
       def self.raise_if_error(context_ptr = nil)
         err = yield
-        return 0 if err == 0
+        return 0 if err.zero?
         raise self.new(context_ptr, err)
       end
     end
@@ -56,7 +55,6 @@ module KerberosAuthenticator
       #   @return [Integer] the result code used to convey the result of a Set Password operation.
       # @!attribute [r] result_string
       #   @return [String] the full result string used to convey the result of a Set Password operation.
-
 
 
       attr_reader :result_code
@@ -72,6 +70,5 @@ module KerberosAuthenticator
         super @result_string.lines.first.strip
       end
     end
-
   end
 end

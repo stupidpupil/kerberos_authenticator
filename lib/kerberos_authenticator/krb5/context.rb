@@ -16,6 +16,8 @@ module KerberosAuthenticator
 
     # A Kerberos context, holding all per-thread state.
     class Context
+      attr_reader :ptr
+
       # @return [Context] a fibre-local Context
       def self.context
         if Krb5.use_secure_context
@@ -29,30 +31,24 @@ module KerberosAuthenticator
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_init_secure_context.html krb5_init_secure_context
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_init_context.html krb5_init_context
       def initialize(secure = false)
-        @buffer = FFI::Buffer.new :pointer
+        pointer = FFI::MemoryPointer.new :pointer
 
         if secure
-          Krb5::LibCallError.raise_if_error { Krb5.init_secure_context(@buffer) }
+          Krb5::LibCallError.raise_if_error { Krb5.init_secure_context(pointer) }
         else
-          Krb5::LibCallError.raise_if_error { Krb5.init_context(@buffer) }
+          Krb5::LibCallError.raise_if_error { Krb5.init_context(pointer) }
         end
 
-        ObjectSpace.define_finalizer(self, self.class.finalize(@buffer))
+        @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
+
         self
       end
 
-      # @return [FFI::Pointer] the pointer to the krb5_context structure
-      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_context.html krb5_context
-      def ptr
-        @buffer.get_pointer(0)
-      end
-
-      # Builds a Proc to free the Context once its no longer in use.
+      # Free a Context
       # @api private
-      # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_context.html krb5_free_context
-      def self.finalize(buffer)
-        proc { Krb5.free_context(buffer.get_pointer(0)) }
+      def self.release(pointer)
+        Krb5.free_context pointer
       end
     end
   end

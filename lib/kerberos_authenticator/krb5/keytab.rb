@@ -6,7 +6,7 @@ module KerberosAuthenticator
     attach_function :krb5_kt_default, [:krb5_context, :buffer_out], :krb5_error_code
 
     attach_function :krb5_kt_close, [:krb5_context, :krb5_keytab], :krb5_error_code
-    
+
     attach_function :krb5_kt_get_type, [:krb5_context, :krb5_keytab], :string
     attach_function :krb5_kt_get_name, [:krb5_context, :krb5_keytab, :buffer_out, :int], :krb5_error_code
 
@@ -18,7 +18,7 @@ module KerberosAuthenticator
 
     # Storage for locally-stored keys.
     class Keytab
-      attr_reader :context
+      attr_reader :ptr
 
       # Resolves a keytab identified by name.
       # The keytab is not opened and may not be accessible or contain any entries. (Use #has_content? to check.)
@@ -27,10 +27,10 @@ module KerberosAuthenticator
       # @return [Keytab] a resolved, but not opened, keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_resolve.html krb5_kt_resolve
       def self.new_with_name(name)
-        buffer = FFI::Buffer.new :pointer
-        Krb5.kt_resolve(Context.context.ptr, name, buffer)
+        pointer = FFI::MemoryPointer.new :pointer
+        Krb5.kt_resolve(Context.context.ptr, name, pointer)
 
-        new(buffer)
+        new(pointer)
       end
 
       # Resolves the default keytab, usually the file at `/etc/krb5.keytab`.
@@ -38,26 +38,19 @@ module KerberosAuthenticator
       # @return [Keytab] the default keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_default.html krb5_kt_default
       def self.default
-        buffer = FFI::Buffer.new :pointer
-        Krb5.kt_default(Context.context.ptr, buffer)
+        pointer = FFI::MemoryPointer.new :pointer
+        Krb5.kt_default(Context.context.ptr, pointer)
 
-        new(buffer)
+        new(pointer)
       end
 
       # Initializes a new Keytab with a buffer containing a krb5_keytab structure, and define its finalizer.
       # @param buffer [FFI::Buffer]
       # @return [Keytab]
-      def initialize(buffer)
-        @buffer = buffer
+      def initialize(pointer)
+        @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
 
-        ObjectSpace.define_finalizer(self, self.class.finalize(buffer))
         self
-      end
-
-      # @return [FFI::Pointer] the pointer to the krb5_keytab structure
-      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/types/krb5_keytab.html krb5_keytab
-      def ptr
-        @buffer.get_pointer(0)
       end
 
       # @return [String] the type of the key table
@@ -75,19 +68,17 @@ module KerberosAuthenticator
         if defined?(Krb5.kt_have_content)
           Krb5.kt_have_content(Context.context.ptr, ptr)
         else # HACK
-          raise Error.new("Could not read #{name}") if file? and !FileTest.readable?(path)
+          raise Error, "Could not read #{name}" if file? and !FileTest.readable?(path)
         end
         true
       end
 
       # @return [Boolean] whether the keytab exists and contains entries
       def has_content?
-        begin
-          assert_has_content
-          true
-        rescue Error => e
-          false
-        end
+        assert_has_content
+        true
+      rescue Error
+        false
       end
 
       # The maximum length, in bytes, that can be read by #name .
@@ -98,7 +89,7 @@ module KerberosAuthenticator
       def name
         buffer = FFI::Buffer.new :char, GET_NAME_MAX_LENGTH
         Krb5.kt_get_name(Context.context.ptr, ptr, buffer, GET_NAME_MAX_LENGTH)
-        buffer.read_bytes(255).force_encoding('UTF-8').split("\x00",2)[0]
+        buffer.read_bytes(255).force_encoding('UTF-8').split("\x00", 2)[0]
       end
 
       # @return [Boolean] if the keytab has a type of 'FILE' or 'file'
@@ -111,12 +102,11 @@ module KerberosAuthenticator
         file? ? name.match(/^(FILE:)?(.+)$/)[2] : nil
       end
 
-      # Builds a Proc to close the Keytab once its no longer in use.
+      # Close a Keytab
       # @api private
-      # @return [Proc]
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_close.html krb5_kt_close
-      def self.finalize(buffer)
-        proc { Krb5.kt_close(Context.context.ptr, buffer.get_pointer(0)) }
+      def self.release(pointer)
+        Krb5.kt_close(Context.context.ptr, pointer)
       end
     end
   end
