@@ -7,7 +7,7 @@ module KerberosAuthenticator
     class Data < FFI::ManagedStruct
       layout :magic, :krb5_error_code, :length, :int, :data_ptr, :pointer
 
-      # Allocate and zero a new krb5_data struct or cast some existing memory to one.
+      # Allocates and zeroes a new krb5_data struct or cast some existing memory to one.
       # @param pointer [Pointer] a pointer to existing memory to cast to a krb5_data struct
       # @see https://github.com/ffi/ffi/wiki/Structs Structs
       def initialize(pointer = nil)
@@ -22,14 +22,14 @@ module KerberosAuthenticator
         super(pointer)
       end
 
-      # Read the data into a string.
+      # Reads the data into a string.
       # @return [String]
       def read_string
         return '' if self[:length].zero?
         self[:data_ptr].read_bytes(self[:length])
       end
 
-      # Free the contents of a Data struct 
+      # Frees the contents of a Data struct 
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_data_contents.html krb5_free_data_contents
       def self.release(pointer)

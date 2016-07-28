@@ -15,6 +15,10 @@ module KerberosAuthenticator
 
     # Credentials, or tickets, provided by a KDC for a user.
     class Creds
+      # @!attribute [r] ptr
+      #   @return [FFI::Pointer] the pointer to the wrapped krb5_creds struct
+
+
       attr_reader :ptr
 
       # The size, in bytes, of the krb5_creds structure.
@@ -39,7 +43,7 @@ module KerberosAuthenticator
         new(ptr)
       end
 
-      # Initialize a new Keytab with a pointer to a krb5_keytab structure, and define its finalizer.
+      # Initialize a new Keytab with a pointer to a krb5_keytab structure.
       # @param ptr [FFI::MemoryPointer]
       # @return [Keytab]
       def initialize(ptr)
@@ -58,7 +62,7 @@ module KerberosAuthenticator
         verify(true, server_principal, keytab)
       end
 
-      # Attempt to verify that these Creds were obtained from a KDC with knowledge of a key in keytab.
+      # Attempts to verify that these Creds were obtained from a KDC with knowledge of a key in keytab.
       # @param nofail [Boolean] whether to raise an Error if no keytab information is available
       # @param server_principal [Principal] the server principal to use choosing an entry in keytab
       # @param keytab [Keytab] the key table containing a key that the KDC should know
@@ -80,7 +84,7 @@ module KerberosAuthenticator
         true
       end
 
-      # Set a password for a principal using these Creds.
+      # Sets a password for a principal using these Creds.
       # The Creds should be for the 'kadmin/changepw' service.
       # @param newpw [String] the new password
       # @param change_password_for [Principal] the Principal to change the password for
@@ -104,7 +108,7 @@ module KerberosAuthenticator
         true
       end
 
-      # Free the contents of the Creds structure
+      # Frees the contents of the Creds structure
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_cred_contents.html krb5_free_cred_contents
       def self.release(pointer)

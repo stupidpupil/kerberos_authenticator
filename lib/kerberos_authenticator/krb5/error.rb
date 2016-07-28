@@ -28,7 +28,7 @@ module KerberosAuthenticator
         super String.new(error_message).force_encoding('UTF-8')
       end
 
-      # Free an error message
+      # Frees an error message
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_error_message.html krb5_free_error_message
       def self.release(pointer)

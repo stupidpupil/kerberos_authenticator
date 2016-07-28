@@ -16,6 +16,10 @@ module KerberosAuthenticator
 
     # A Kerberos context, holding all per-thread state.
     class Context
+      # @!attribute [r] ptr
+      #   @return [FFI::Pointer] the pointer to the wrapped krb5_context struct
+
+
       attr_reader :ptr
 
       # @return [Context] a fibre-local Context
@@ -44,7 +48,7 @@ module KerberosAuthenticator
         self
       end
 
-      # Free a Context
+      # Frees a Context
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_context.html krb5_free_context
       def self.release(pointer)

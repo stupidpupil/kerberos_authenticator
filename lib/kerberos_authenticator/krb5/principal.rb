@@ -10,6 +10,10 @@ module KerberosAuthenticator
 
     # A Kerberos principal identifying a user, service or machine.
     class Principal
+      # @!attribute [r] ptr
+      #   @return [FFI::Pointer] the pointer to the wrapped krb5_principal struct
+
+
       attr_reader :ptr
 
       # Convert a string representation of a principal name into a new Principal.
@@ -24,8 +28,8 @@ module KerberosAuthenticator
         new(pointer)
       end
 
-      # Initialize a new Principal with a buffer containing a krb5_principal structure, and define its finalizer.
-      # @param buffer [FFI::Pointer]
+      # Initialize a new Principal with a pointer to a pointer to a krb5_principal structure.
+      # @param pointer [FFI::Pointer]
       # @return [Principal]
       def initialize(pointer)
         @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
@@ -64,7 +68,7 @@ module KerberosAuthenticator
         changepw_creds.set_password(new_pw, self)
       end
 
-      # Free a Principal
+      # Frees a Principal
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_free_principal.html krb5_free_principal
       def self.release(pointer)

@@ -18,6 +18,10 @@ module KerberosAuthenticator
 
     # Storage for locally-stored keys.
     class Keytab
+      # @!attribute [r] ptr
+      #   @return [FFI::Pointer] the pointer to the wrapped krb5_keytab struct
+
+
       attr_reader :ptr
 
       # Resolves a keytab identified by name.
@@ -44,8 +48,8 @@ module KerberosAuthenticator
         new(pointer)
       end
 
-      # Initializes a new Keytab with a buffer containing a krb5_keytab structure, and define its finalizer.
-      # @param buffer [FFI::Buffer]
+      # Initializes a new Keytab with a pointer to a pointer to a krb5_keytab structure.
+      # @param pointer [FFI::Buffer]
       # @return [Keytab]
       def initialize(pointer)
         @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
@@ -102,7 +106,7 @@ module KerberosAuthenticator
         file? ? name.match(/^(FILE:)?(.+)$/)[2] : nil
       end
 
-      # Close a Keytab
+      # Closes a Keytab
       # @api private
       # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_close.html krb5_kt_close
       def self.release(pointer)
