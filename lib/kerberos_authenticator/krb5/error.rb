@@ -67,7 +67,7 @@ module KerberosAuthenticator
       def initialize(result_code, result_string)
         @result_code = result_code
         @result_string = result_string
-        super @result_string.lines.first.strip
+        super @result_string.lines.first.to_s.strip
       end
     end
   end
