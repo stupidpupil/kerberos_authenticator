@@ -14,6 +14,18 @@ module KerberosAuthenticator
       module_function :init_secure_context
     end
 
+    attach_function :krb5_get_default_realm, [:krb5_context, :pointer], :krb5_error_code
+
+    attach_function :krb5_xfree, [:pointer], :krb5_error_code
+
+    begin
+      attach_function :krb5_free_string, [:krb5_context, :pointer], :krb5_error_code
+    rescue FFI::NotFoundError
+      # Heimdal
+      define_method(:free_string) { |_ctx, pointer| Krb5.xfree(pointer) }
+      module_function :free_string
+    end
+
     # A Kerberos context, holding all per-thread state.
     class Context
       # @!attribute [r] ptr
@@ -46,6 +58,21 @@ module KerberosAuthenticator
         @ptr = FFI::AutoPointer.new pointer.get_pointer(0), self.class.method(:release)
 
         self
+      end
+
+      # Retrieves the default realm
+      # @return [String]
+      # @see http://web.mit.edu/kerberos/krb5-1.14/doc/appdev/refs/api/krb5_get_default_realm.html krb5_get_default_realm
+      def default_realm
+        out_ptr = FFI::MemoryPointer.new :pointer
+        Krb5.get_default_realm(ptr, out_ptr)
+
+        str_ptr = out_ptr.read_pointer
+        copy = String.new(str_ptr.read_string).force_encoding('UTF-8')
+
+        Krb5.free_string(ptr, str_ptr)
+
+        copy
       end
 
       # Frees a Context
