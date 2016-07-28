@@ -58,5 +58,4 @@ describe KerberosAuthenticator::Krb5::Keytab do
       -> { KerberosAuthenticator::Krb5::Keytab.new_with_name('DOJO:講道館') }.should.raise KerberosAuthenticator::Krb5::Error
     end
   end
-
 end

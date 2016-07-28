@@ -19,5 +19,4 @@ describe KerberosAuthenticator::Krb5::Principal do
       KerberosAuthenticator::Krb5::Principal.new_with_name('владимир@кремль.ру').name.should.equal 'владимир@кремль.ру'
     end
   end
-
 end

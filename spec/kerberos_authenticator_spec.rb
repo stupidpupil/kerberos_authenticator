@@ -82,7 +82,7 @@ describe KerberosAuthenticator do
 
     describe 'when I try to change a password (to the same password) with a valid username and password' do
       it 'must return true' do
-        p = KerberosAuthenticator.change_password!(@username, @password, @password).should.equal true
+        KerberosAuthenticator.change_password!(@username, @password, @password).should.equal true
       end
     end
 
