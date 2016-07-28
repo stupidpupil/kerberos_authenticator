@@ -2,8 +2,8 @@ module KerberosAuthenticator
   module Krb5
     typedef :pointer, :krb5_keytab
 
-    attach_function :krb5_kt_resolve, [:krb5_context, :string, :buffer_out], :krb5_error_code
-    attach_function :krb5_kt_default, [:krb5_context, :buffer_out], :krb5_error_code
+    attach_function :krb5_kt_resolve, [:krb5_context, :string, :pointer], :krb5_error_code
+    attach_function :krb5_kt_default, [:krb5_context, :pointer], :krb5_error_code
 
     attach_function :krb5_kt_close, [:krb5_context, :krb5_keytab], :krb5_error_code
 

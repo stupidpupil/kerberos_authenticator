@@ -2,7 +2,7 @@ module KerberosAuthenticator
   module Krb5
     typedef :pointer, :krb5_principal
 
-    attach_function :krb5_parse_name, [:krb5_context, :string, :krb5_principal], :krb5_error_code
+    attach_function :krb5_parse_name, [:krb5_context, :string, :pointer], :krb5_error_code
     attach_function :krb5_free_principal, [:krb5_context, :krb5_principal], :void
 
     attach_function :krb5_unparse_name, [:krb5_context, :krb5_principal, :pointer], :krb5_error_code
