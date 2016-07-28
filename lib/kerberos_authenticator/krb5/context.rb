@@ -23,7 +23,7 @@ module KerberosAuthenticator
     end
 
     begin
-      attach_function :krb5_free_string, [:krb5_context, :pointer], :krb5_error_code
+      attach_function :krb5_free_string, [:krb5_context, :pointer], :void
     rescue FFI::NotFoundError
       # Heimdal
       define_method(:free_string) { |_ctx, pointer| Krb5.xfree(pointer) }
