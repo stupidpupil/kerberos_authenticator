@@ -6,10 +6,11 @@ describe KerberosAuthenticator::Krb5::Context do
     it 'must give me a thread-specific Context' do
       KerberosAuthenticator::Krb5::Context.context.should.equal KerberosAuthenticator::Krb5::Context.context
 
-      other_ctx = nil
-      thread = Thread.new { other_ctx = Context.context}
+      @other_ctx = nil
+      thread = Thread.new { @other_ctx = KerberosAuthenticator::Krb5::Context.context}.join
 
-      KerberosAuthenticator::Krb5::Context.context.should.not.equal other_ctx
+      @other_ctx.class.should.equal KerberosAuthenticator::Krb5::Context
+      KerberosAuthenticator::Krb5::Context.context.should.not.equal @other_ctx
     end
   end
 
