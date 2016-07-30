@@ -32,7 +32,7 @@ module KerberosAuthenticator
       # Resolves a keytab identified by name.
       # The keytab is not opened and may not be accessible or contain any entries. (Use #has_content? to check.)
       # @param name [String] a name of the form 'type:residual', where usually type is 'FILE' and residual the path to that file
-      # @raises [Error] if the type is unknown
+      # @raise [Error] if the type is unknown
       # @return [Keytab] a resolved, but not opened, keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_resolve.html krb5_kt_resolve
       def self.new_with_name(name)
@@ -65,7 +65,7 @@ module KerberosAuthenticator
       # Checks if the underlying keytab file or other store exists and contains entries.
       # (When `krb5_kt_have_content` isn't provided by the Kerberos library, then only some very limited checks are performed.)
       # @return [TrueClass] if the keytab exists and contains entries
-      # @raises [Error] if there is a problem finding entries in the keytab
+      # @raise [Error] if there is a problem finding entries in the keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_have_content.html krb5_kt_have_content
       def assert_has_content
         if defined?(Krb5.kt_have_content)
@@ -77,6 +77,7 @@ module KerberosAuthenticator
       end
 
       # @return [Boolean] whether the keytab exists and contains entries
+      # @see #assert_has_content
       def has_content?
         assert_has_content
         true

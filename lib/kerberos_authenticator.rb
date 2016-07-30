@@ -5,6 +5,7 @@ require 'kerberos_authenticator/version'
 require 'kerberos_authenticator/error'
 require 'kerberos_authenticator/krb5'
 
+# Authenticates a Kerberos user using their password.
 module KerberosAuthenticator
   # A convenience method to access the Krb5 module when using the setup method.
   # @return [Krb5]

@@ -57,6 +57,7 @@ module KerberosAuthenticator
       end
 
       # Calls #verify with nofail as true.
+      # @return [TrueClass] always returns true if no error was raised
       # @see #verify
       def verify!(server_principal = nil, keytab = nil)
         verify(true, server_principal, keytab)

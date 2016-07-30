@@ -63,6 +63,7 @@ module KerberosAuthenticator
       # A convenience function to allow a Principal to change a password by authenticating themselves.
       # @raise [Error] if the attempt to change the password fails
       # @return [TrueClass] always returns true if no error was raised
+      # @see Creds#set_password
       def change_password(oldpw, new_pw)
         changepw_creds = self.initial_creds_with_password(oldpw, 'kadmin/changepw')
         changepw_creds.set_password(new_pw, self)
