@@ -15,3 +15,5 @@ cache:
   - bundler
   - apt
 script: bundle exec bacon -a
+after_success:
+  - bundle exec codeclimate-test-reporter
