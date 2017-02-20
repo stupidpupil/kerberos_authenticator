@@ -29,6 +29,14 @@ describe KerberosAuthenticator::Krb5::Keytab do
     end
   end
 
+  describe 'when I try to resolve a Keytab with a type of FILE and a fairly long path' do
+    it 'must return a Keytab with that type and path' do
+      kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:'+('a'*300))
+      kt.type.should.equal 'FILE'
+      kt.path.should.equal ('a'*300)
+    end
+  end
+
   describe 'when I try to resolve a Keytab with a type of FILE and a non-ASCII path' do
     it 'must return a Keytab with that type and path' do
       kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:/итд/krb5.keytab')
