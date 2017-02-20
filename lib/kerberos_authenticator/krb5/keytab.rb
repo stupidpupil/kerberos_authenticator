@@ -86,7 +86,8 @@ module KerberosAuthenticator
       end
 
       # The maximum length, in bytes, that can be read by #name .
-      GET_NAME_MAX_LENGTH = 512
+      # HACK: Any value here might not be long enough.
+      GET_NAME_MAX_LENGTH = 1024+5
 
       # The seperator between the type and the residual in a keytab's name
       FULL_NAME_DELIMITER = ':'
