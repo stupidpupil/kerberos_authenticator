@@ -52,6 +52,16 @@ describe KerberosAuthenticator::Krb5::Keytab do
     end
   end
 
+  describe 'when I try to check the contents of a Keytab that is an empty file' do
+    it 'must return false' do
+      empty_file = Tempfile.new('empty_file', encoding: 'binary')
+      empty_file.write('')
+      kt = KerberosAuthenticator::Krb5::Keytab.new_with_name('FILE:'+empty_file.path)
+      kt.has_content?.should.equal false
+      empty_file.close
+    end
+  end
+
   if ENV['KA_SPEC_KT_PATH']
     describe 'when I try to check the contents of a Keytab that does exist and contain entries' do
       it 'must return true' do

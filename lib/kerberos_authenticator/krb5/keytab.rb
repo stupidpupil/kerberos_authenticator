@@ -71,7 +71,10 @@ module KerberosAuthenticator
         if defined?(Krb5.kt_have_content)
           Krb5.kt_have_content(Context.context.ptr, ptr)
         else # HACK
-          raise Error, "Could not read #{name}" if file? and !FileTest.readable?(path)
+          if file?
+            raise Error, "Could not read #{name}" if !FileTest.readable?(path)
+            raise Error, "#{name} does not appear to be a MIT keytab file" if File.read(path).unpack('C').first != 5
+          end
         end
         true
       end
