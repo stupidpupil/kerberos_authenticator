@@ -110,7 +110,7 @@ module KerberosAuthenticator
         else
           buffer = FFI::Buffer.new :char, GET_NAME_MAX_LENGTH
           Krb5.kt_get_name(Context.context.ptr, ptr, buffer, GET_NAME_MAX_LENGTH)
-          buffer.read_bytes(GET_NAME_MAX_LENGTH).force_encoding('UTF-8').split("\x00", 2)[0]
+          buffer.read_bytes(GET_NAME_MAX_LENGTH).force_encoding('UTF-8').strip
         end
       end
 
