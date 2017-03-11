@@ -19,4 +19,27 @@ describe KerberosAuthenticator::Krb5::Principal do
       KerberosAuthenticator::Krb5::Principal.new_with_name('владимир@кремль.ру').name.should.equal 'владимир@кремль.ру'
     end
   end
+
+  describe 'when I create two Principals with the same name and compare them' do
+    it 'must return that they are equal' do
+      a = KerberosAuthenticator::Krb5::Principal.new_with_name('владимир@кремль.ру')
+      b = KerberosAuthenticator::Krb5::Principal.new_with_name('владимир@кремль.ру')
+
+      a.should.equal b
+      b.should.equal a
+
+      a.hash.should.equal b.hash
+    end
+  end
+
+  describe 'when I create two Principals with different names and compare them' do
+    it 'must return that they are not equal' do
+      a = KerberosAuthenticator::Krb5::Principal.new_with_name('владимир@кремль.ру')
+      b = KerberosAuthenticator::Krb5::Principal.new_with_name('борис@кремль.ру')
+
+      a.should.not.equal b
+      b.should.not.equal a
+    end
+  end
+
 end

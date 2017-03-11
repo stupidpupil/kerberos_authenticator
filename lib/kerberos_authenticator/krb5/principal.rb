@@ -60,6 +60,29 @@ module KerberosAuthenticator
         copy
       end
 
+      alias :to_s :name
+
+      # Returns true if other is also a Principal and it has the same name as this Principal.
+      # @return [Boolean]
+      def ==(other)
+        (other.is_a? self.class) and (other.name == self.name)
+      end
+
+      alias :eql? :==
+
+      # Generates an integer hash value for the Principal based on its #name.
+      # @return [Integer]
+      def hash
+        [self.class, self.name].hash
+      end
+
+      # Produces a human-readable representation of this Principal object, 
+      # including the Principal's #name.
+      # @return [String]
+      def inspect
+        "#<#{self.class.name} #{self.name}>"
+      end
+
       # A convenience function to allow a Principal to change a password by authenticating themselves.
       # @raise [Error] if the attempt to change the password fails
       # @return [TrueClass] always returns true if no error was raised
