@@ -92,10 +92,10 @@ module KerberosAuthenticator
       # HACK: Any value here might not be long enough.
       # The value here is based on a maximum prefix/type length of 30
       # and a maximum residual/path length of 1024
-      GET_NAME_MAX_LENGTH = 30+1024
+      GET_NAME_MAX_LENGTH = 30 + 1024
 
       # The seperator between the type and the residual in a keytab's name
-      FULL_NAME_DELIMITER = ':'
+      FULL_NAME_DELIMITER = ':'.freeze
 
       # @return [String] the name of the key table
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_get_name.html kt_get_name
