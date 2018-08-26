@@ -7,7 +7,7 @@ require 'kerberos_authenticator/krb5'
 
 # Authenticates a Kerberos user using their password.
 module KerberosAuthenticator
-  # A convenience method to access the Krb5 module when using the setup method.
+  # A convenience method to access the Krb5 module when using the {setup} method.
   # @return [Krb5]
   def self.krb5
     Krb5
@@ -47,7 +47,7 @@ module KerberosAuthenticator
 
   # @!attribute [rw] keytab_base64
   #   @!scope class
-  #   @return [String] the keytab to use when verifying the identity of the KDC represented as a Base64 encoded string (overrides keytab_path)
+  #   @return [String] the keytab to use when verifying the identity of the KDC represented as a Base64 encoded string (overrides {keytab_path})
 
   # @!attribute [rw] keytab_path
   #   @!scope class

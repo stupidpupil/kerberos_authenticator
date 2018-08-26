@@ -35,7 +35,6 @@ module KerberosAuthenticator
       # @!attribute [r] ptr
       #   @return [FFI::Pointer] the pointer to the wrapped krb5_context struct
 
-
       attr_reader :ptr
 
       # @return [Context] a fibre-local Context

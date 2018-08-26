@@ -70,7 +70,7 @@ module KerberosAuthenticator
 
       alias :eql? :==
 
-      # Generates an integer hash value for the Principal based on its #name.
+      # Generates an integer hash value for the Principal based on its name.
       # @return [Integer]
       def hash
         [self.class, self.name].hash

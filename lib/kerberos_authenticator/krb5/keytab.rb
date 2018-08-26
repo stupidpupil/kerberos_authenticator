@@ -30,7 +30,7 @@ module KerberosAuthenticator
       attr_reader :ptr
 
       # Resolves a keytab identified by name.
-      # The keytab is not opened and may not be accessible or contain any entries. (Use #has_content? to check.)
+      # The keytab is not opened and may not be accessible or contain any entries. (Use {#has_content?} to check.)
       # @param name [String] a name of the form 'type:residual', where usually type is 'FILE' and residual the path to that file
       # @raise [Error] if the type is unknown
       # @return [Keytab] a resolved, but not opened, keytab
@@ -43,7 +43,7 @@ module KerberosAuthenticator
       end
 
       # Resolves the default keytab, usually the file at `/etc/krb5.keytab`.
-      # The keytab is not opened and may not be accessible or contain any entries. (Use #has_content? to check.)
+      # The keytab is not opened and may not be accessible or contain any entries. (Use {#has_content?} to check.)
       # @return [Keytab] the default keytab
       # @see http://web.mit.edu/Kerberos/krb5-1.14/doc/appdev/refs/api/krb5_kt_default.html krb5_kt_default
       def self.default

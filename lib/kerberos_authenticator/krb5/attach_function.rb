@@ -1,9 +1,9 @@
 module KerberosAuthenticator
   module Krb5
-    # Attaches a Kerberos library function to Krb5.
+    # Attaches a Kerberos library function to {Krb5}.
     # Extends FFI's built-in method to:
     # - drop the krb5_ prefix from function names
-    # - wrap any call returning a krb5_error_code with Krb5::LibCallError.raise_if_error
+    # - wrap any call returning a krb5_error_code with {Krb5::LibCallError.raise_if_error}
     # @api private
     # @see http://www.rubydoc.info/github/ffi/ffi/FFI/Library#attach_function-instance_method FFI::Library#attach_function
     def self.attach_function(c_name, params, returns, options = {})
