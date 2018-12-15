@@ -56,12 +56,31 @@ module KerberosAuthenticator
         @ptr = ptr
       end
 
+      # As of December 2018, Heimdal and the Apple fork don't cope with
+      # a missing server principal correctly. We check to see if 
+      #'get_host_princs_from_keytab' is implemented (which is what 
+      # MIT Kerberos uses when server principal is NULL) and, if not, 
+      # fall back on Heimdal's intended behaviour in #verify below.
+
+      begin
+        Krb5.attach_function :get_host_princs_from_keytab, [:pointer], :krb5_error_code
+      rescue FFI::NotFoundError
+        # Heimdal
+        @@KRB5_DOES_NOT_SUPPORT_MISSING_SERVER_PRINCIPAL = true
+        require 'socket' #For Socket.gethostname
+      end
+
+
       # Calls #verify with nofail as true.
       # @return [TrueClass] always returns true if no error was raised
       # @see #verify
       def verify!(server_principal = nil, keytab = nil)
         verify(true, server_principal, keytab)
       end
+
+
+
+
 
       # Attempts to verify that these Creds were obtained from a KDC with knowledge of a key in keytab.
       # @param nofail [Boolean] whether to raise an Error if no keytab information is available
@@ -78,6 +97,13 @@ module KerberosAuthenticator
         Krb5.verify_init_creds_opt_set_ap_req_nofail(verify_creds_opt, nofail)
 
         server_princ_ptr = server_principal ? server_principal.ptr : nil
+
+
+        if @@KRB5_DOES_NOT_SUPPORT_MISSING_SERVER_PRINCIPAL and !server_princ_ptr
+          server_principal = Principal.new_with_name("host/#{Socket.gethostname}")
+          server_princ_ptr = server_principal.ptr
+        end
+
         keytab_ptr = keytab ? keytab.ptr : nil
 
         Krb5.verify_init_creds(Context.context.ptr, ptr, server_princ_ptr, keytab_ptr, nil, verify_creds_opt)

@@ -80,6 +80,14 @@ describe KerberosAuthenticator do
       end
     end
 
+
+    describe 'when I specify no server principal name and try to authenticate (with an invalid username and password)' do
+      it 'must raise an Error (and not just segfault)' do
+        KerberosAuthenticator.server = nil
+        -> { KerberosAuthenticator.authenticate!(@username, "not#{@password}") }.should.raise KerberosAuthenticator::Error
+      end
+    end
+
     describe 'when I try to change a password (to the same password) with a valid username and password' do
       it 'must return true' do
         KerberosAuthenticator.change_password!(@username, @password, @password).should.equal true
